@@ -58,12 +58,27 @@ class Handler(BaseHTTPRequestHandler):
                 capture_output=True, text=True, timeout=180
             )
             if result.returncode == 0:
-                return result.stdout.strip()
+                return self._clean_output(result.stdout.strip())
             return f"Eroare NotebookLM: {result.stderr.strip()}"
         except subprocess.TimeoutExpired:
             return "Cererea a durat prea mult (>3 min). Încearcă din nou cu un singur notebook selectat."
         except Exception as e:
             return f"Eroare internă: {str(e)}"
+
+    def _clean_output(self, text):
+        import re
+        lines = text.splitlines()
+        clean = []
+        skip_prefixes = ("Continuing conversation", "Resumed conversation", "Answer:", "Profile:", "Using persistent")
+        for line in lines:
+            stripped = line.strip()
+            if any(stripped.startswith(p) for p in skip_prefixes):
+                continue
+            clean.append(line)
+        # Remove citation markers like [1], [2], etc.
+        result = "\n".join(clean).strip()
+        result = re.sub(r'\s*\[\d+\]', '', result)
+        return result.strip()
 
     def _serve_file(self, path, content_type):
         try:

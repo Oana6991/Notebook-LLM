@@ -91,6 +91,19 @@ function sendSuggestion(btn) {
   sendMessage();
 }
 
+function renderMarkdown(text) {
+  return text
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/^#{1,3}\s+(.+)$/gm, "<strong>$1</strong>")
+    .replace(/^[\*\-]\s+(.+)$/gm, "<li>$1</li>")
+    .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
+    .replace(/\n\n+/g, "</p><p>")
+    .replace(/\n/g, "<br/>")
+    .replace(/^(.+)$/, "<p>$1</p>");
+}
+
 function appendMessage(role, text) {
   const msg = document.createElement("div");
   msg.className = `message ${role}`;
@@ -101,7 +114,7 @@ function appendMessage(role, text) {
 
   const bubble = document.createElement("div");
   bubble.className = "bubble";
-  bubble.innerHTML = text.replace(/\n/g, "<br/>");
+  bubble.innerHTML = role === "ai" ? renderMarkdown(text) : text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
   msg.appendChild(avatar);
   msg.appendChild(bubble);
