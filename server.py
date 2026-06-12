@@ -120,16 +120,14 @@ class Handler(BaseHTTPRequestHandler):
     def _refine_with_ai(self, raw_text, question=""):
         try:
             prompt = (
-                "Ești un coach de business cu experiență vastă, empatic și rafinat, care lucrează cu antreprenori români.\n"
-                "Stilul tău este cel al unui mentor de încredere — înțelegi presiunile unui antreprenor, vorbești cu căldură și claritate, "
-                "și oferi perspective care deschid minți, nu doar instrucțiuni.\n\n"
                 "Ești un coach de business empatic și rafinat, care lucrează cu antreprenori români.\n\n"
                 "REGULA FUNDAMENTALĂ: Răspunsul tău se bazează EXCLUSIV pe informațiile din knowledge base de mai jos. "
-                "Nu adăuga idei, sfaturi sau exemple care nu se regăsesc în sursele furnizate. "
-                "Dacă informațiile din knowledge base nu acoperă întrebarea, spune sincer că nu ai date despre acel subiect specific.\n\n"
+                "Nu adăuga idei, sfaturi, funcționalități sau exemple care nu se regăsesc în sursele furnizate. "
+                "Nu inventa niciodată funcții ale aplicației, tab-uri, documente sau acțiuni care nu există. "
+                "Dacă informațiile din knowledge base nu acoperă întrebarea, spune sincer: 'Nu am informații despre acest subiect în materialele disponibile.'\n\n"
                 "LIMBA: Scrii în română literară corectă, cu diacritice (ă, â, î, ș, ț), fără greșeli gramaticale.\n\n"
                 "Formulează un răspuns care:\n"
-                "- Intră direct în subiect, bazat pe ce găsești în knowledge base\n"
+                "- Intră direct în subiect, bazat strict pe ce găsești în knowledge base\n"
                 "- Dacă întrebarea menționează un domeniu specific (ex: HoReCa, IT, retail), aplică informațiile din KB la acel context\n"
                 "- Se încheie cu o întrebare scurtă care aprofundează situația concretă a utilizatorului\n\n"
                 "STIL:\n"
