@@ -415,6 +415,32 @@
 
     .modal-confirm:hover { opacity: 0.85; }
 
+    /* TEMPLATES */
+    .templates {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .template-chip {
+      background: rgba(206, 244, 78, 0.08);
+      border: 1px solid rgba(206, 244, 78, 0.3);
+      color: var(--color-text-body);
+      font-family: var(--font-family);
+      font-size: 12px;
+      padding: 7px 12px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .template-chip:hover {
+      background: rgba(206, 244, 78, 0.15);
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+
     /* PRINT STYLES */
     @media print {
       header, .hero, .notebook-selector, .suggestions,
@@ -523,12 +549,22 @@
   <!-- MODAL: Generează material -->
   <div class="modal-overlay" id="generateModal">
     <div class="modal">
-      <h2>Generează <span>material PDF</span></h2>
-      <p>Descrie ce material vrei să generezi din knowledge base. De exemplu: "Rezumat al modulului 3", "Ghid pas cu pas pentru finanțare europeană", "Top 10 greșeli ale unui IMM".</p>
-      <textarea id="generatePrompt" placeholder="Ex: Creează un ghid complet despre cum să lansezi un IMM în România..."></textarea>
+      <h2>Generează <span>material educațional</span></h2>
+      <p>Descrie ce material vrei să creezi din knowledge base. Poți folosi unul din templatele de mai jos sau scrie propria cerere.</p>
+
+      <div class="templates">
+        <button class="template-chip" onclick="setTemplate('Rezumat complet al cursului cu punctele cheie și concluzii')">📋 Rezumat curs</button>
+        <button class="template-chip" onclick="setTemplate('Ghid pas cu pas pentru lansarea unui IMM în România')">🚀 Ghid lansare IMM</button>
+        <button class="template-chip" onclick="setTemplate('Top 10 greșeli pe care le fac antreprenorii la început și cum să le eviți')">⚠️ Top greșeli</button>
+        <button class="template-chip" onclick="setTemplate('Plan de acțiune în 30 de zile pentru un business nou')">📅 Plan 30 zile</button>
+        <button class="template-chip" onclick="setTemplate('Fișă de învățare cu definiții, concepte cheie și exemple practice')">📖 Fișă de învățare</button>
+        <button class="template-chip" onclick="setTemplate('Checklist complet pentru accesarea finanțărilor europene')">✅ Checklist finanțare</button>
+      </div>
+
+      <textarea id="generatePrompt" placeholder="Sau scrie propria cerere: ex. Creează un ghid despre strategii de marketing pentru IMM-uri..."></textarea>
       <div class="modal-actions">
         <button class="modal-cancel" onclick="closeGenerateModal()">Anulează</button>
-        <button class="modal-confirm" onclick="generateMaterial()">Generează și exportă PDF</button>
+        <button class="modal-confirm" onclick="generateMaterial()">✨ Generează și exportă PDF</button>
       </div>
     </div>
   </div>

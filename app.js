@@ -8,7 +8,8 @@ const NOTEBOOKS = [
   { id: "81d897a2-ba0f-45f2-854e-e62513885bbb", label: "GALSS" },
   { id: "c7fe1db8-bd81-47e1-bbf6-a649d6ff8220", label: "IMV" },
 ];
-let activeNotebookId = NOTEBOOKS[0].id;
+// "all" = caută în toate, array = caută în mai multe selectate
+let selectedNotebooks = ["all"];
 const API_ENDPOINT = "/api/chat";
 // ============================================================
 
@@ -17,18 +18,60 @@ const inputEl = document.getElementById("userInput");
 const suggestionsEl = document.getElementById("suggestions");
 const selectorEl = document.getElementById("notebookSelector");
 
-// Build notebook selector buttons
-NOTEBOOKS.forEach((nb) => {
-  const btn = document.createElement("button");
-  btn.className = "nb-btn" + (nb.id === activeNotebookId ? " active" : "");
-  btn.textContent = nb.label;
-  btn.onclick = () => {
-    activeNotebookId = nb.id;
-    selectorEl.querySelectorAll(".nb-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
+// ── SELECTOR NOTEBOOK ───────────────────────────────────────
+function buildSelector() {
+  selectorEl.innerHTML = "";
+
+  // Buton "Toate"
+  const allBtn = document.createElement("button");
+  allBtn.className = "nb-btn" + (selectedNotebooks.includes("all") ? " active" : "");
+  allBtn.textContent = "🔍 Toate";
+  allBtn.onclick = () => {
+    selectedNotebooks = ["all"];
+    updateSelectorUI();
   };
-  selectorEl.appendChild(btn);
-});
+  selectorEl.appendChild(allBtn);
+
+  NOTEBOOKS.forEach((nb) => {
+    const btn = document.createElement("button");
+    const isActive = selectedNotebooks.includes(nb.id);
+    btn.className = "nb-btn" + (isActive ? " active" : "");
+    btn.textContent = nb.label;
+    btn.onclick = () => {
+      if (selectedNotebooks.includes("all")) {
+        selectedNotebooks = [nb.id];
+      } else if (selectedNotebooks.includes(nb.id)) {
+        selectedNotebooks = selectedNotebooks.filter(id => id !== nb.id);
+        if (selectedNotebooks.length === 0) selectedNotebooks = ["all"];
+      } else {
+        selectedNotebooks = [...selectedNotebooks, nb.id];
+      }
+      updateSelectorUI();
+    };
+    selectorEl.appendChild(btn);
+  });
+}
+
+function updateSelectorUI() {
+  const btns = selectorEl.querySelectorAll(".nb-btn");
+  btns[0].classList.toggle("active", selectedNotebooks.includes("all"));
+  NOTEBOOKS.forEach((nb, i) => {
+    btns[i + 1].classList.toggle("active", selectedNotebooks.includes(nb.id));
+  });
+}
+
+buildSelector();
+
+// ── HELPERS ─────────────────────────────────────────────────
+function getActiveIds() {
+  if (selectedNotebooks.includes("all")) return NOTEBOOKS.map(n => n.id);
+  return selectedNotebooks;
+}
+
+function getActiveLabels() {
+  if (selectedNotebooks.includes("all")) return "Toate notebook-urile";
+  return selectedNotebooks.map(id => NOTEBOOKS.find(n => n.id === id)?.label).join(", ");
+}
 
 function autoResize(el) {
   el.style.height = "auto";
@@ -58,7 +101,7 @@ function appendMessage(role, text) {
 
   const bubble = document.createElement("div");
   bubble.className = "bubble";
-  bubble.textContent = text;
+  bubble.innerHTML = text.replace(/\n/g, "<br/>");
 
   msg.appendChild(avatar);
   msg.appendChild(bubble);
@@ -71,15 +114,12 @@ function showTyping() {
   const msg = document.createElement("div");
   msg.className = "message ai typing";
   msg.id = "typing-indicator";
-
   const avatar = document.createElement("div");
   avatar.className = "avatar ai";
   avatar.textContent = "AI";
-
   const bubble = document.createElement("div");
   bubble.className = "bubble";
   bubble.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
-
   msg.appendChild(avatar);
   msg.appendChild(bubble);
   messagesEl.appendChild(msg);
@@ -91,11 +131,49 @@ function hideTyping() {
   if (el) el.remove();
 }
 
+// ── QUERY (unul sau mai multe notebook-uri) ─────────────────
+async function queryNotebooks(question) {
+  const ids = getActiveIds();
+
+  if (ids.length === 1) {
+    const res = await fetch(API_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ notebook_id: ids[0], question }),
+    });
+    if (!res.ok) throw new Error(`Server error: ${res.status}`);
+    const data = await res.json();
+    return data.answer || "Nu am primit un răspuns valid.";
+  }
+
+  // Caută în paralel în toate notebook-urile selectate
+  const results = await Promise.all(ids.map(async (id) => {
+    const nb = NOTEBOOKS.find(n => n.id === id);
+    try {
+      const res = await fetch(API_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notebook_id: id, question }),
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return { label: nb?.label, answer: data.answer };
+    } catch {
+      return null;
+    }
+  }));
+
+  const valid = results.filter(r => r && r.answer);
+  if (valid.length === 0) return "Nu am găsit răspunsuri în notebook-urile selectate.";
+  if (valid.length === 1) return valid[0].answer;
+
+  return valid.map(r => `**${r.label}:**\n${r.answer}`).join("\n\n---\n\n");
+}
+
 // ── EXPORT CONVERSAȚIE PDF ──────────────────────────────────
 function exportChat() {
-  const notebook = NOTEBOOKS.find(n => n.id === activeNotebookId);
   const meta = document.getElementById("printMeta");
-  meta.textContent = `Notebook: ${notebook ? notebook.label : "—"} · ${new Date().toLocaleDateString("ro-RO", { day: "2-digit", month: "long", year: "numeric" })}`;
+  meta.textContent = `Surse: ${getActiveLabels()} · ${new Date().toLocaleDateString("ro-RO", { day: "2-digit", month: "long", year: "numeric" })}`;
   document.getElementById("printHeader").style.display = "block";
   window.print();
   document.getElementById("printHeader").style.display = "none";
@@ -111,6 +189,10 @@ function closeGenerateModal() {
   document.getElementById("generateModal").classList.remove("open");
 }
 
+function setTemplate(text) {
+  document.getElementById("generatePrompt").value = text;
+}
+
 async function generateMaterial() {
   const prompt = document.getElementById("generatePrompt").value.trim();
   if (!prompt) return;
@@ -118,25 +200,18 @@ async function generateMaterial() {
   closeGenerateModal();
   suggestionsEl.style.display = "none";
 
+  const fullPrompt = `Creează un material educațional complet și detaliat despre: ${prompt}.
+Structurează răspunsul cu titlu, introducere, secțiuni clare cu subtitluri, puncte cheie și concluzii.
+Folosește informațiile din knowledge base.`;
+
   appendMessage("user", `📄 Generează material: ${prompt}`);
   showTyping();
 
   try {
-    const response = await fetch(API_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ notebook_id: activeNotebookId, question: prompt }),
-    });
-
+    const answer = await queryNotebooks(fullPrompt);
     hideTyping();
-
-    if (!response.ok) throw new Error(`Server error: ${response.status}`);
-
-    const data = await response.json();
-    appendMessage("ai", data.answer || "Nu am primit un răspuns valid.");
-
-    // auto-export ca PDF după generare
-    setTimeout(() => exportChat(), 300);
+    appendMessage("ai", answer);
+    setTimeout(() => exportChat(), 400);
   } catch (err) {
     hideTyping();
     appendMessage("ai", "⚠️ Nu am putut genera materialul. Încearcă din nou.");
@@ -152,32 +227,18 @@ async function sendMessage() {
   if (!text) return;
 
   suggestionsEl.style.display = "none";
-
   appendMessage("user", text);
   inputEl.value = "";
   inputEl.style.height = "auto";
-
   showTyping();
 
   try {
-    const response = await fetch(API_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ notebook_id: activeNotebookId, question: text }),
-    });
-
+    const answer = await queryNotebooks(text);
     hideTyping();
-
-    if (!response.ok) throw new Error(`Server error: ${response.status}`);
-
-    const data = await response.json();
-    appendMessage("ai", data.answer || "Nu am primit un răspuns valid.");
+    appendMessage("ai", answer);
   } catch (err) {
     hideTyping();
-    appendMessage(
-      "ai",
-      "⚠️ Nu am putut obține un răspuns. Verifică configurarea API-ului sau încearcă din nou."
-    );
+    appendMessage("ai", "⚠️ Nu am putut obține un răspuns. Verifică că serverul rulează și încearcă din nou.");
     console.error(err);
   }
 }
