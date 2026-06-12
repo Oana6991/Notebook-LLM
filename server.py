@@ -146,7 +146,7 @@ class Handler(BaseHTTPRequestHandler):
                 f"Informații din knowledge base:\n{raw_text}"
             )
             response = _ai_client.messages.create(
-                model="claude-haiku-4-5",
+                model="claude-opus-4-8",
                 max_tokens=1024,
                 messages=[{"role": "user", "content": prompt}],
             )
