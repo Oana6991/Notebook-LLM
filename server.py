@@ -3,11 +3,16 @@ Backend Knowledge Base Upriserz.
 Rulează cu: python3 server.py
 """
 import json
+import os
 import re
 import subprocess
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from http.server import BaseHTTPRequestHandler, HTTPServer
+
+import anthropic
+
+_ai_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
 PORT = 8080
 executor = ThreadPoolExecutor(max_workers=10)
@@ -55,6 +60,7 @@ class Handler(BaseHTTPRequestHandler):
                 nid = notebook_ids[0] if notebook_ids else notebook_id
                 answer = self._query_one(nid, question)
 
+            answer = self._refine_with_ai(answer)
             self._send(200, {"answer": answer})
         else:
             self._send(404, {"error": "not found"})
@@ -104,6 +110,28 @@ class Handler(BaseHTTPRequestHandler):
         result = "\n".join(clean).strip()
         result = re.sub(r'\s*\[\d+\]', '', result)
         return result.strip()
+
+    def _refine_with_ai(self, raw_text):
+        try:
+            prompt = (
+                "Ești un asistent care reformatează răspunsuri din knowledge base.\n"
+                "Reformatează textul de mai jos astfel:\n"
+                "- Scurt și la obiect (maxim 300 cuvinte)\n"
+                "- Structurat cu bullet points sau paragrafe scurte\n"
+                "- Fără metadata, referințe sau informații irelevante\n"
+                "- Răspunde în română\n"
+                "- Nu adăuga introduceri sau concluzii inutile\n\n"
+                f"Text:\n{raw_text}"
+            )
+            response = _ai_client.messages.create(
+                model="claude-haiku-4-5",
+                max_tokens=1024,
+                messages=[{"role": "user", "content": prompt}],
+            )
+            return response.content[0].text.strip()
+        except Exception as e:
+            print(f"[AI refine error] {e}")
+            return raw_text
 
     def _serve_file(self, path, content_type):
         try:
