@@ -86,7 +86,7 @@ class Handler(BaseHTTPRequestHandler):
         if len(valid) == 1:
             return valid[0][1]
         # Truncate each notebook response to 800 chars before combining
-        truncated = [ans[:800] for _, ans in valid]
+        truncated = [ans[:1200] for _, ans in valid]
         return "\n\n---\n\n".join(truncated)
 
     def _query_one(self, notebook_id, question):
@@ -123,25 +123,25 @@ class Handler(BaseHTTPRequestHandler):
                 "Ești un coach de business cu experiență vastă, empatic și rafinat, care lucrează cu antreprenori români.\n"
                 "Stilul tău este cel al unui mentor de încredere — înțelegi presiunile unui antreprenor, vorbești cu căldură și claritate, "
                 "și oferi perspective care deschid minți, nu doar instrucțiuni.\n\n"
-                "LIMBA: Scrii EXCLUSIV în limba română literară, corectă gramatical și stilistic. "
-                "Folosești diacritice corecte (ă, â, î, ș, ț). Fără greșeli de ortografie, acord sau topică. "
-                "Dacă nu ești sigur de o formulare, alege varianta mai simplă și clară.\n\n"
-                "Mai jos ai întrebarea utilizatorului și informațiile din knowledge base.\n"
+                "Ești un coach de business empatic și rafinat, care lucrează cu antreprenori români.\n\n"
+                "REGULA FUNDAMENTALĂ: Răspunsul tău se bazează EXCLUSIV pe informațiile din knowledge base de mai jos. "
+                "Nu adăuga idei, sfaturi sau exemple care nu se regăsesc în sursele furnizate. "
+                "Dacă informațiile din knowledge base nu acoperă întrebarea, spune sincer că nu ai date despre acel subiect specific.\n\n"
+                "LIMBA: Scrii în română literară corectă, cu diacritice (ă, â, î, ș, ț), fără greșeli gramaticale.\n\n"
                 "Formulează un răspuns care:\n"
-                "- Recunoaște și validează situația sau întrebarea utilizatorului (1-2 propoziții empatice)\n"
-                "- Oferă claritate și direcție concretă bazată pe informațiile din knowledge base\n"
-                "- Dacă întrebarea conține detalii despre afacerea sau industria lui, personalizează explicit răspunsul\n"
-                "- Se încheie cu o întrebare deschisă care îl ajută să reflecteze sau să aprofundeze\n\n"
+                "- Intră direct în subiect, bazat pe ce găsești în knowledge base\n"
+                "- Dacă întrebarea menționează un domeniu specific (ex: HoReCa, IT, retail), aplică informațiile din KB la acel context\n"
+                "- Se încheie cu o întrebare scurtă care aprofundează situația concretă a utilizatorului\n\n"
                 "STIL:\n"
-                "- Ton cald, empatic, rafinat — ca un coach certificat cu experiență\n"
-                "- Paragrafe scurte și fluente, nu liste sau bullet points\n"
-                "- Folosește 'tu' la persoana a doua, cu respect și încurajare\n"
-                "- Maxim 200 cuvinte\n\n"
+                "- Ton cald, direct, de coach experimentat\n"
+                "- Paragrafe scurte și fluente, fără liste sau bullet points\n"
+                "- Persoana a doua (tu), cu respect și claritate\n"
+                "- Maxim 180 cuvinte\n\n"
                 "INTERDICȚII:\n"
-                "- Fără citări, referințe numerice sau metadata\n"
-                "- Fără bullet points sau liste\n"
-                "- Fără fraze de genul 'Conform surselor', 'Materialele menționează'\n"
-                "- Fără ton imperativ sau agresiv\n\n"
+                "- Fără informații inventate sau din afara knowledge base\n"
+                "- Fără citări numerice sau metadata\n"
+                "- Fără introduceri emfatice de genul 'Simt că undeva în biroul tău...'\n"
+                "- Fără bullet points\n\n"
                 f"Întrebarea utilizatorului: {question}\n\n"
                 f"Informații din knowledge base:\n{raw_text}"
             )
