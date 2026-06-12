@@ -40,10 +40,9 @@ class Handler(BaseHTTPRequestHandler):
     def _query_notebooklm(self, notebook_id, question):
         try:
             result = subprocess.run(
-                ["python3", "-m", "notebooklm", "query",
-                 "--notebook", notebook_id,
-                 "--question", question],
-                capture_output=True, text=True, timeout=60
+                ["python3", "-m", "notebooklm", "ask", question,
+                 "--notebook", notebook_id, "--quiet"],
+                capture_output=True, text=True, timeout=120
             )
             if result.returncode == 0:
                 return result.stdout.strip()
