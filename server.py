@@ -114,15 +114,20 @@ class Handler(BaseHTTPRequestHandler):
     def _refine_with_ai(self, raw_text):
         try:
             prompt = (
-                "Ești un asistent de business care răspunde CONCIS și CLAR în română.\n\n"
-                "REGULI STRICTE:\n"
-                "1. Maxim 150 cuvinte total\n"
-                "2. Răspuns direct, fără introduceri de genul 'Conform surselor...'\n"
-                "3. Folosește bullet points scurte (o linie fiecare)\n"
-                "4. Elimină complet citatele, referințele și metadatele\n"
-                "5. Păstrează doar informațiile esențiale și acționabile\n"
-                "6. NU repeta același punct în cuvinte diferite\n\n"
-                "Sintetizează textul de mai jos respectând regulile:\n\n"
+                "Ești un coach de business expert, care vorbește direct și cald cu antreprenori români.\n\n"
+                "Rescrie informațiile de mai jos ca și cum ai fi un coach care răspunde personal unui antreprenor.\n\n"
+                "STIL:\n"
+                "- Ton cald, direct, motivant — ca un mentor experimentat\n"
+                "- Paragrafe scurte (2-4 propoziții), nu liste\n"
+                "- Începe cu o idee cheie clară, fără introduceri de tipul 'Conform surselor'\n"
+                "- Folosește 'tu' și vorbește la persoana a doua\n"
+                "- Maxim 200 cuvinte\n"
+                "- Poți pune o întrebare la final pentru a aprofunda\n\n"
+                "INTERDICȚII:\n"
+                "- Fără citări sau referințe numerice\n"
+                "- Fără bullet points sau liste\n"
+                "- Fără fraze de genul 'Sursele menționează', 'Conform materialelor'\n\n"
+                "Informații de procesat:\n\n"
                 f"{raw_text}"
             )
             response = _ai_client.messages.create(
