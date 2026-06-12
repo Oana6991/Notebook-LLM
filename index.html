@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Knowledge Base – LP IMM</title>
+  <title>Knowledge Base – Upriserz</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -33,8 +33,14 @@
       padding: 24px 40px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
       border-bottom: 1px solid rgba(206, 244, 78, 0.15);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     .logo-mark {
@@ -56,18 +62,63 @@
       -webkit-text-fill-color: transparent;
     }
 
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1px solid rgba(206, 244, 78, 0.35);
+      color: var(--color-text-body);
+      font-family: var(--font-family);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    .action-btn svg {
+      width: 15px;
+      height: 15px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    .action-btn.generate {
+      background: var(--color-button);
+      border-color: var(--color-button);
+      color: #0d1e1f;
+      font-weight: 700;
+    }
+
+    .action-btn.generate:hover {
+      opacity: 0.85;
+      color: #0d1e1f;
+    }
+
     /* HERO */
     .hero {
       text-align: center;
-      padding: 64px 24px 40px;
+      padding: 48px 24px 32px;
     }
 
     .hero h1 {
-      font-size: clamp(28px, 5vw, 48px);
+      font-size: clamp(26px, 5vw, 44px);
       font-weight: 700;
       color: var(--color-text-headline);
       line-height: 1.2;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .hero h1 em {
@@ -109,9 +160,7 @@
       align-items: flex-start;
     }
 
-    .message.user {
-      flex-direction: row-reverse;
-    }
+    .message.user { flex-direction: row-reverse; }
 
     .avatar {
       width: 36px;
@@ -125,10 +174,7 @@
       font-weight: 700;
     }
 
-    .avatar.ai {
-      background: var(--gradient-logo);
-      color: #0d1e1f;
-    }
+    .avatar.ai { background: var(--gradient-logo); color: #0d1e1f; }
 
     .avatar.user-av {
       background: rgba(206, 244, 78, 0.15);
@@ -167,8 +213,7 @@
     }
 
     .dot {
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       border-radius: 50%;
       background: var(--color-accent);
       animation: bounce 1.2s infinite;
@@ -206,16 +251,13 @@
       overflow-y: auto;
     }
 
-    textarea::placeholder {
-      color: rgba(185, 185, 186, 0.5);
-    }
+    textarea::placeholder { color: rgba(185, 185, 186, 0.5); }
 
     .send-btn {
       background: var(--color-button);
       border: none;
       border-radius: 10px;
-      width: 44px;
-      height: 44px;
+      width: 44px; height: 44px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -226,12 +268,7 @@
 
     .send-btn:hover { opacity: 0.85; }
     .send-btn:active { transform: scale(0.95); }
-
-    .send-btn svg {
-      width: 20px;
-      height: 20px;
-      fill: #0d1e1f;
-    }
+    .send-btn svg { width: 20px; height: 20px; fill: #0d1e1f; }
 
     .hint {
       font-size: 12px;
@@ -260,9 +297,7 @@
       transition: background 0.2s;
     }
 
-    .suggestion-chip:hover {
-      background: rgba(206, 244, 78, 0.1);
-    }
+    .suggestion-chip:hover { background: rgba(206, 244, 78, 0.1); }
 
     /* NOTEBOOK SELECTOR */
     .notebook-selector {
@@ -285,10 +320,7 @@
       transition: all 0.2s;
     }
 
-    .nb-btn:hover {
-      border-color: var(--color-accent);
-      color: var(--color-accent);
-    }
+    .nb-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
 
     .nb-btn.active {
       background: rgba(206, 244, 78, 0.12);
@@ -297,32 +329,150 @@
       font-weight: 700;
     }
 
-    /* CONFIG NOTICE */
-    .config-notice {
-      background: rgba(255, 180, 0, 0.1);
-      border: 1px solid rgba(255, 180, 0, 0.4);
-      border-radius: 12px;
-      padding: 16px 20px;
-      font-size: 14px;
-      color: #FFB400;
-      line-height: 1.6;
-      margin-bottom: 8px;
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
     }
 
-    .config-notice strong { color: #FFB400; }
-    .config-notice code {
-      background: rgba(255,180,0,0.15);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 12px;
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--color-form-bg);
+      border: 1px solid rgba(206, 244, 78, 0.25);
+      border-radius: 20px;
+      padding: 32px;
+      width: 90%;
+      max-width: 560px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
+
+    .modal h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-text-headline);
+    }
+
+    .modal h2 span { color: var(--color-accent); }
+
+    .modal p {
+      font-size: 14px;
+      color: var(--color-text-body);
+      line-height: 1.6;
+    }
+
+    .modal textarea {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(206, 244, 78, 0.25);
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 14px;
+      color: var(--color-text-headline);
+      width: 100%;
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .modal-cancel {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: var(--color-text-body);
+      font-family: var(--font-family);
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .modal-cancel:hover { border-color: rgba(255,255,255,0.4); }
+
+    .modal-confirm {
+      background: var(--color-button);
+      border: none;
+      color: #0d1e1f;
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .modal-confirm:hover { opacity: 0.85; }
+
+    /* PRINT STYLES */
+    @media print {
+      header, .hero, .notebook-selector, .suggestions,
+      .input-area, .hint, .modal-overlay, .header-actions { display: none !important; }
+
+      body { background: #fff; color: #000; }
+
+      .chat-wrapper { padding: 0; max-width: 100%; }
+
+      .messages { min-height: unset; }
+
+      .print-header {
+        display: block !important;
+        font-family: 'Poppins', sans-serif;
+        margin-bottom: 24px;
+        border-bottom: 2px solid #CEF44E;
+        padding-bottom: 12px;
+      }
+
+      .print-header h2 { font-size: 20px; color: #000; }
+      .print-header p { font-size: 12px; color: #666; }
+
+      .message.ai .bubble {
+        background: #f4f4f4;
+        color: #000;
+        border: 1px solid #ddd;
+      }
+
+      .message.user .bubble {
+        background: #e8f5e9;
+        color: #000;
+        border: 1px solid #ccc;
+      }
+
+      .avatar { display: none; }
+      .bubble { max-width: 100%; }
+    }
+
+    .print-header { display: none; }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="logo-mark"></div>
-    <div class="logo-text"><span>Knowledge Base</span></div>
+    <div class="header-left">
+      <div class="logo-mark"></div>
+      <div class="logo-text"><span>Knowledge Base</span></div>
+    </div>
+    <div class="header-actions">
+      <button class="action-btn" onclick="exportChat()">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zm-1 9l-3-3h2v-4h2v4h2l-3 3z"/></svg>
+        Exportă conversația
+      </button>
+      <button class="action-btn generate" onclick="openGenerateModal()">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 15h8v2H8zm0-4h8v2H8zm0-4h5v2H8z"/></svg>
+        Generează material
+      </button>
+    </div>
   </header>
 
   <div class="hero">
@@ -335,10 +485,14 @@
     <div class="notebook-selector" id="notebookSelector"></div>
 
     <div class="messages" id="messages">
+      <div class="print-header" id="printHeader">
+        <h2>Knowledge Base – Upriserz</h2>
+        <p id="printMeta"></p>
+      </div>
       <div class="message ai">
         <div class="avatar ai">AI</div>
         <div class="bubble">
-          Salut! Sunt asistentul echipei LP IMM. Pot să te ajut cu informații din cursurile de business, documente și articole. Ce vrei să afli?
+          Salut! Sunt asistentul echipei Upriserz. Pot să te ajut cu informații din cursurile de business, documente și articole. Ce vrei să afli?
         </div>
       </div>
     </div>
@@ -359,13 +513,24 @@
         oninput="autoResize(this)"
       ></textarea>
       <button class="send-btn" onclick="sendMessage()">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
       </button>
     </div>
     <div class="hint">Apasă Enter pentru a trimite · Shift+Enter pentru linie nouă</div>
 
+  </div>
+
+  <!-- MODAL: Generează material -->
+  <div class="modal-overlay" id="generateModal">
+    <div class="modal">
+      <h2>Generează <span>material PDF</span></h2>
+      <p>Descrie ce material vrei să generezi din knowledge base. De exemplu: "Rezumat al modulului 3", "Ghid pas cu pas pentru finanțare europeană", "Top 10 greșeli ale unui IMM".</p>
+      <textarea id="generatePrompt" placeholder="Ex: Creează un ghid complet despre cum să lansezi un IMM în România..."></textarea>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeGenerateModal()">Anulează</button>
+        <button class="modal-confirm" onclick="generateMaterial()">Generează și exportă PDF</button>
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>

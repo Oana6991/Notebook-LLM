@@ -91,12 +91,66 @@ function hideTyping() {
   if (el) el.remove();
 }
 
+// ── EXPORT CONVERSAȚIE PDF ──────────────────────────────────
+function exportChat() {
+  const notebook = NOTEBOOKS.find(n => n.id === activeNotebookId);
+  const meta = document.getElementById("printMeta");
+  meta.textContent = `Notebook: ${notebook ? notebook.label : "—"} · ${new Date().toLocaleDateString("ro-RO", { day: "2-digit", month: "long", year: "numeric" })}`;
+  document.getElementById("printHeader").style.display = "block";
+  window.print();
+  document.getElementById("printHeader").style.display = "none";
+}
+
+// ── MODAL GENEREAZĂ MATERIAL ────────────────────────────────
+function openGenerateModal() {
+  document.getElementById("generateModal").classList.add("open");
+  document.getElementById("generatePrompt").focus();
+}
+
+function closeGenerateModal() {
+  document.getElementById("generateModal").classList.remove("open");
+}
+
+async function generateMaterial() {
+  const prompt = document.getElementById("generatePrompt").value.trim();
+  if (!prompt) return;
+
+  closeGenerateModal();
+  suggestionsEl.style.display = "none";
+
+  appendMessage("user", `📄 Generează material: ${prompt}`);
+  showTyping();
+
+  try {
+    const response = await fetch(API_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ notebook_id: activeNotebookId, question: prompt }),
+    });
+
+    hideTyping();
+
+    if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+    const data = await response.json();
+    appendMessage("ai", data.answer || "Nu am primit un răspuns valid.");
+
+    // auto-export ca PDF după generare
+    setTimeout(() => exportChat(), 300);
+  } catch (err) {
+    hideTyping();
+    appendMessage("ai", "⚠️ Nu am putut genera materialul. Încearcă din nou.");
+    console.error(err);
+  }
+
+  document.getElementById("generatePrompt").value = "";
+}
+
+// ── TRIMITE MESAJ ───────────────────────────────────────────
 async function sendMessage() {
   const text = inputEl.value.trim();
   if (!text) return;
 
-  // hide config notice after first message
-  document.getElementById("configNotice").style.display = "none";
   suggestionsEl.style.display = "none";
 
   appendMessage("user", text);
