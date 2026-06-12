@@ -1,12 +1,25 @@
 """
-Backend simplu pentru Knowledge Base LP IMM.
+Backend Knowledge Base Upriserz.
 Rulează cu: python3 server.py
 """
 import json
 import subprocess
+import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 PORT = 8080
+
+
+class ThreadedHTTPServer(HTTPServer):
+    """Procesează fiecare cerere într-un thread separat."""
+    def process_request(self, request, client_address):
+        t = threading.Thread(target=self.__new_request, args=(request, client_address))
+        t.daemon = True
+        t.start()
+
+    def __new_request(self, request, client_address):
+        self.finish_request(request, client_address)
+        self.shutdown_request(request)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -42,13 +55,13 @@ class Handler(BaseHTTPRequestHandler):
             result = subprocess.run(
                 ["python3", "-m", "notebooklm", "ask", question,
                  "--notebook", notebook_id],
-                capture_output=True, text=True, timeout=120
+                capture_output=True, text=True, timeout=180
             )
             if result.returncode == 0:
                 return result.stdout.strip()
             return f"Eroare NotebookLM: {result.stderr.strip()}"
         except subprocess.TimeoutExpired:
-            return "Cererea a durat prea mult. Încearcă din nou."
+            return "Cererea a durat prea mult (>3 min). Încearcă din nou cu un singur notebook selectat."
         except Exception as e:
             return f"Eroare internă: {str(e)}"
 
@@ -74,6 +87,6 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    server = HTTPServer(("0.0.0.0", PORT), Handler)
+    server = ThreadedHTTPServer(("0.0.0.0", PORT), Handler)
     print(f"Server pornit la http://localhost:{PORT}")
     server.serve_forever()
