@@ -108,20 +108,22 @@ class Handler(BaseHTTPRequestHandler):
                 continue
             clean.append(line)
         result = "\n".join(clean).strip()
-        result = re.sub(r'\s*\[[\d,\s]+\]', '', result)
+        result = re.sub(r'\s*\[[\d,\s\-]+\]', '', result)
         return result.strip()
 
     def _refine_with_ai(self, raw_text):
         try:
             prompt = (
-                "Ești un asistent care reformatează răspunsuri din knowledge base.\n"
-                "Reformatează textul de mai jos astfel:\n"
-                "- Scurt și la obiect (maxim 300 cuvinte)\n"
-                "- Structurat cu bullet points sau paragrafe scurte\n"
-                "- Fără metadata, referințe sau informații irelevante\n"
-                "- Răspunde în română\n"
-                "- Nu adăuga introduceri sau concluzii inutile\n\n"
-                f"Text:\n{raw_text}"
+                "Ești un asistent de business care răspunde CONCIS și CLAR în română.\n\n"
+                "REGULI STRICTE:\n"
+                "1. Maxim 150 cuvinte total\n"
+                "2. Răspuns direct, fără introduceri de genul 'Conform surselor...'\n"
+                "3. Folosește bullet points scurte (o linie fiecare)\n"
+                "4. Elimină complet citatele, referințele și metadatele\n"
+                "5. Păstrează doar informațiile esențiale și acționabile\n"
+                "6. NU repeta același punct în cuvinte diferite\n\n"
+                "Sintetizează textul de mai jos respectând regulile:\n\n"
+                f"{raw_text}"
             )
             response = _ai_client.messages.create(
                 model="claude-haiku-4-5",
