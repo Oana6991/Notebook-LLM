@@ -41,7 +41,7 @@ class Handler(BaseHTTPRequestHandler):
         try:
             result = subprocess.run(
                 ["python3", "-m", "notebooklm", "ask", question,
-                 "--notebook", notebook_id, "--quiet"],
+                 "--notebook", notebook_id],
                 capture_output=True, text=True, timeout=120
             )
             if result.returncode == 0:
