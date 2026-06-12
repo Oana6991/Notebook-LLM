@@ -68,27 +68,33 @@ class Handler(BaseHTTPRequestHandler):
     def _query_parallel(self, notebook_ids, question):
         futures = {executor.submit(self._query_one, nid, question): nid for nid in notebook_ids}
         results = {}
-        for future in as_completed(futures):
+        # Wait max 90 seconds total; use whatever notebooks responded by then
+        for future in as_completed(futures, timeout=90):
             nid = futures[future]
             try:
                 results[nid] = future.result()
             except Exception as e:
                 results[nid] = f"Eroare: {str(e)}"
 
-        # Return combined if multiple, single if only one valid
+        # Cancel any still-running futures
+        for future in futures:
+            future.cancel()
+
         valid = [(nid, ans) for nid, ans in results.items() if ans and not ans.startswith("Eroare")]
         if not valid:
             return "Nu am găsit răspunsuri în notebook-urile selectate."
         if len(valid) == 1:
             return valid[0][1]
-        return "\n\n---\n\n".join(ans for _, ans in valid)
+        # Truncate each notebook response to 800 chars before combining
+        truncated = [ans[:800] for _, ans in valid]
+        return "\n\n---\n\n".join(truncated)
 
     def _query_one(self, notebook_id, question):
         try:
             result = subprocess.run(
                 ["python3", "-m", "notebooklm", "ask", question,
                  "--notebook", notebook_id],
-                capture_output=True, text=True, timeout=180
+                capture_output=True, text=True, timeout=60
             )
             if result.returncode == 0:
                 return self._clean_output(result.stdout.strip())
