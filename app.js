@@ -147,40 +147,14 @@ function hideTyping() {
 // ── QUERY (unul sau mai multe notebook-uri) ─────────────────
 async function queryNotebooks(question) {
   const ids = getActiveIds();
-
-  if (ids.length === 1) {
-    const res = await fetch(API_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ notebook_id: ids[0], question }),
-    });
-    if (!res.ok) throw new Error(`Server error: ${res.status}`);
-    const data = await res.json();
-    return data.answer || "Nu am primit un răspuns valid.";
-  }
-
-  // Caută în paralel în toate notebook-urile selectate
-  const results = await Promise.all(ids.map(async (id) => {
-    const nb = NOTEBOOKS.find(n => n.id === id);
-    try {
-      const res = await fetch(API_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ notebook_id: id, question }),
-      });
-      if (!res.ok) return null;
-      const data = await res.json();
-      return { label: nb?.label, answer: data.answer };
-    } catch {
-      return null;
-    }
-  }));
-
-  const valid = results.filter(r => r && r.answer);
-  if (valid.length === 0) return "Nu am găsit răspunsuri în notebook-urile selectate.";
-  if (valid.length === 1) return valid[0].answer;
-
-  return valid.map(r => `**${r.label}:**\n${r.answer}`).join("\n\n---\n\n");
+  const res = await fetch(API_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ notebook_ids: ids, question }),
+  });
+  if (!res.ok) throw new Error(`Server error: ${res.status}`);
+  const data = await res.json();
+  return data.answer || "Nu am primit un răspuns valid.";
 }
 
 // ── EXPORT CONVERSAȚIE PDF ──────────────────────────────────
