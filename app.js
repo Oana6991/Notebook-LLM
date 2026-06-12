@@ -1,13 +1,32 @@
 // ============================================================
-// CONFIGURARE — completează aceste valori
+// CONFIGURARE
 // ============================================================
-const NOTEBOOK_ID = "YOUR_NOTEBOOK_ID_HERE";
-const API_ENDPOINT = "/api/chat"; // endpoint-ul tău backend
+const NOTEBOOKS = [
+  { id: "7f3f1d0d-8e82-47c1-946c-c1f32af61f75", label: "Notebook 1" },
+  { id: "193e048b-1796-430b-a6f6-ad725877eae4", label: "Notebook 2" },
+  { id: "2527f96c-18e9-4c7c-8309-3c2f8fc06d43", label: "Notebook 3" },
+];
+let activeNotebookId = NOTEBOOKS[0].id;
+const API_ENDPOINT = "/api/chat";
 // ============================================================
 
 const messagesEl = document.getElementById("messages");
 const inputEl = document.getElementById("userInput");
 const suggestionsEl = document.getElementById("suggestions");
+const selectorEl = document.getElementById("notebookSelector");
+
+// Build notebook selector buttons
+NOTEBOOKS.forEach((nb) => {
+  const btn = document.createElement("button");
+  btn.className = "nb-btn" + (nb.id === activeNotebookId ? " active" : "");
+  btn.textContent = nb.label;
+  btn.onclick = () => {
+    activeNotebookId = nb.id;
+    selectorEl.querySelectorAll(".nb-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+  };
+  selectorEl.appendChild(btn);
+});
 
 function autoResize(el) {
   el.style.height = "auto";
@@ -88,7 +107,7 @@ async function sendMessage() {
     const response = await fetch(API_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ notebook_id: NOTEBOOK_ID, question: text }),
+      body: JSON.stringify({ notebook_id: activeNotebookId, question: text }),
     });
 
     hideTyping();

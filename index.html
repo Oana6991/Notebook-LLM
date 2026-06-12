@@ -264,6 +264,39 @@
       background: rgba(206, 244, 78, 0.1);
     }
 
+    /* NOTEBOOK SELECTOR */
+    .notebook-selector {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+
+    .nb-btn {
+      background: transparent;
+      border: 1px solid rgba(206, 244, 78, 0.35);
+      color: var(--color-text-body);
+      font-family: var(--font-family);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nb-btn:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    .nb-btn.active {
+      background: rgba(206, 244, 78, 0.12);
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      font-weight: 700;
+    }
+
     /* CONFIG NOTICE */
     .config-notice {
       background: rgba(255, 180, 0, 0.1);
@@ -299,9 +332,7 @@
 
   <div class="chat-wrapper">
 
-    <div id="configNotice" class="config-notice">
-      <strong>Configurare necesară:</strong> Adaugă Notebook ID-ul tău NotebookLM în fișierul <code>app.js</code> (variabila <code>NOTEBOOK_ID</code>) și cheia API pentru a activa răspunsurile reale.
-    </div>
+    <div class="notebook-selector" id="notebookSelector"></div>
 
     <div class="messages" id="messages">
       <div class="message ai">
