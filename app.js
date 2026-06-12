@@ -5,6 +5,8 @@ const NOTEBOOKS = [
   { id: "7f3f1d0d-8e82-47c1-946c-c1f32af61f75", label: "Notebook 1" },
   { id: "193e048b-1796-430b-a6f6-ad725877eae4", label: "Notebook 2" },
   { id: "2527f96c-18e9-4c7c-8309-3c2f8fc06d43", label: "Notebook 3" },
+  { id: "81d897a2-ba0f-45f2-854e-e62513885bbb", label: "Notebook 4" },
+  { id: "c7fe1db8-bd81-47e1-bbf6-a649d6ff8220", label: "Notebook 5" },
 ];
 let activeNotebookId = NOTEBOOKS[0].id;
 const API_ENDPOINT = "/api/chat";
