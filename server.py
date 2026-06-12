@@ -60,7 +60,7 @@ class Handler(BaseHTTPRequestHandler):
                 nid = notebook_ids[0] if notebook_ids else notebook_id
                 answer = self._query_one(nid, question)
 
-            answer = self._refine_with_ai(answer)
+            answer = self._refine_with_ai(answer, question)
             self._send(200, {"answer": answer})
         else:
             self._send(404, {"error": "not found"})
@@ -111,24 +111,27 @@ class Handler(BaseHTTPRequestHandler):
         result = re.sub(r'\s*\[[\d,\s\-]+\]', '', result)
         return result.strip()
 
-    def _refine_with_ai(self, raw_text):
+    def _refine_with_ai(self, raw_text, question=""):
         try:
             prompt = (
                 "Ești un coach de business expert, care vorbește direct și cald cu antreprenori români.\n\n"
-                "Rescrie informațiile de mai jos ca și cum ai fi un coach care răspunde personal unui antreprenor.\n\n"
+                "Mai jos ai întrebarea utilizatorului și informațiile din knowledge base.\n"
+                "Formulează un răspuns personalizat: dacă întrebarea conține detalii despre afacerea, "
+                "industria sau situația utilizatorului, adaptează răspunsul explicit la contextul lui — "
+                "nu da sfaturi generice când ai informații specifice.\n\n"
                 "STIL:\n"
                 "- Ton cald, direct, motivant — ca un mentor experimentat\n"
                 "- Paragrafe scurte (2-4 propoziții), nu liste\n"
-                "- Începe cu o idee cheie clară, fără introduceri de tipul 'Conform surselor'\n"
+                "- Începe direct cu ideea cheie, fără 'Conform surselor'\n"
                 "- Folosește 'tu' și vorbește la persoana a doua\n"
                 "- Maxim 200 cuvinte\n"
-                "- Poți pune o întrebare la final pentru a aprofunda\n\n"
+                "- Pune o întrebare la final pentru a aprofunda situația concretă\n\n"
                 "INTERDICȚII:\n"
                 "- Fără citări sau referințe numerice\n"
                 "- Fără bullet points sau liste\n"
                 "- Fără fraze de genul 'Sursele menționează', 'Conform materialelor'\n\n"
-                "Informații de procesat:\n\n"
-                f"{raw_text}"
+                f"Întrebarea utilizatorului: {question}\n\n"
+                f"Informații din knowledge base:\n{raw_text}"
             )
             response = _ai_client.messages.create(
                 model="claude-haiku-4-5",
