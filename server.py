@@ -108,7 +108,7 @@ class Handler(BaseHTTPRequestHandler):
                 continue
             clean.append(line)
         result = "\n".join(clean).strip()
-        result = re.sub(r'\s*\[\d+\]', '', result)
+        result = re.sub(r'\s*\[[\d,\s]+\]', '', result)
         return result.strip()
 
     def _refine_with_ai(self, raw_text):
