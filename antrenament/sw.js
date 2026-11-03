@@ -1,6 +1,6 @@
 // Doar fișierele aplicației (pagina, iconițe, fonturi, librăria Supabase) se țin în cache.
 // Datele de antrenament și login-ul merg MEREU direct la Supabase — nu se cache-uiesc niciodată.
-const CACHE = 'sala-v1';
+const CACHE = 'sala-v2';
 const FILES = ['./', 'index.html', 'manifest.json', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 const CDN = ['cdn.jsdelivr.net', 'fonts.googleapis.com', 'fonts.gstatic.com'];
 

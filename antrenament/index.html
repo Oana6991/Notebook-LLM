@@ -231,6 +231,27 @@ svg.ch{width:100%;height:148px;display:block;overflow:visible}
   font-size:14px;box-shadow:0 12px 30px rgba(35,39,52,.3)}
 .hint{font-size:12.5px;color:var(--muted-2);text-align:center;padding:8px 14px 16px;
   line-height:1.55;font-weight:500}
+.cardh{font-family:var(--disp);font-size:16.5px;font-weight:800;letter-spacing:-.03em;margin:2px 2px 10px}
+.delta{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800;
+  padding:4px 10px;border-radius:999px;white-space:nowrap}
+.delta.up{background:var(--mint-s);color:#2E6B52}
+.delta.down{background:var(--pink-s);color:var(--pink-d)}
+.delta.flat{background:var(--wash);color:var(--muted)}
+svg rect.b0{fill:var(--wash)}
+svg rect.b1{fill:url(#gbar)}
+svg text.bl{fill:var(--muted-2)}
+.advrow{display:flex;gap:11px;align-items:flex-start;padding:11px 2px;border-top:1px solid var(--line)}
+.advrow:first-of-type{border-top:0}
+.advrow .dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:none}
+.advrow .nm2{font-size:14.5px;font-weight:700;letter-spacing:-.02em}
+.advrow .tg{font-size:10.5px;font-weight:800;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.advrow .tp{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+.ptab{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.ptab th{font-size:10px;font-weight:800;color:var(--muted-2);text-align:right;padding:3px 5px;
+  text-transform:uppercase;letter-spacing:.04em}
+.ptab th:first-child{text-align:left}
+.ptab td{font-size:13px;font-weight:600;text-align:right;padding:8px 5px;border-top:1px solid var(--line)}
+.ptab td:first-child{text-align:left;font-weight:700}
 
 /* ---------- profil ---------- */
 .hero{display:flex;align-items:center;gap:16px;padding:20px 18px}
@@ -480,6 +501,7 @@ let tab="log", sel=null, toastT=null, authMode="in", authBusy=false, authMsg=nul
 let rest={left:0,on:false}, restT=null, profT=null;
 let Q=[];   /* scrieri eșuate, se reîncearcă */
 let LB=null, CH=null, CHP=null, LBper="week", gsub="lb";
+let progPer="week", progMetric="e1rm";
 
 const uid=()=> (crypto.randomUUID?crypto.randomUUID():"x"+Math.random().toString(36).slice(2)+Date.now().toString(36));
 const today=()=>{ const d=new Date(); return new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10); };
@@ -772,6 +794,74 @@ function viewHist(){
 }
 
 /* ---- PROGRES ---- */
+/* ---- analytics: perioade, forță estimată, recomandări ---- */
+function vol1(v){ return v>=1000?fmt(v/1000)+" t":Math.round(v)+" kg"; }
+function monthStart(d){ return d.slice(0,8)+"01"; }
+function periodKey(d){ return progPer==="week"?weekStart(d):monthStart(d); }
+function periodsSeq(n){
+  const out=[], iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+  if(progPer==="week"){ let c=new Date(weekStart(today())+"T12:00:00");
+    for(let k=0;k<n;k++){ out.unshift(iso(c)); c.setDate(c.getDate()-7); } }
+  else{ let c=new Date(today()+"T12:00:00"); c.setDate(1);
+    for(let k=0;k<n;k++){ out.unshift(iso(c)); c.setMonth(c.getMonth()-1); } }
+  return out;
+}
+function periodLabel(k){ const x=new Date(k+"T12:00:00");
+  return progPer==="week"
+    ? x.toLocaleDateString("ro-RO",{day:"numeric",month:"short"}).replace(".","")
+    : x.toLocaleDateString("ro-RO",{month:"short",year:"2-digit"}).replace("."," "); }
+function periodTick(k){ const x=new Date(k+"T12:00:00");
+  return progPer==="week"? String(x.getDate()) : x.toLocaleDateString("ro-RO",{month:"short"}).replace(".",""); }
+function itemStat(it){ let topKg=0,e=0,reps=0,vol=0;
+  it.steps.forEach(st=>{ if(!st.reps.length)return; if(st.kg>topKg)topKg=st.kg;
+    st.reps.forEach(r=>{ vol+=r*st.kg; const x=st.kg*(1+r/30); if(x>e)e=x; reps+=r; }); });
+  return topKg?{topKg,e1rm:Math.round(e*10)/10,reps,vol}:null; }
+function topReps(it){ let topKg=0; it.steps.forEach(st=>{ if(st.reps.length&&st.kg>topKg)topKg=st.kg; });
+  let mr=0; it.steps.forEach(st=>{ if(st.kg===topKg) st.reps.forEach(r=>{ if(r>mr)mr=r; }); }); return {topKg,mr}; }
+function exSeries(exId){ const out=[];
+  S.sessions.forEach(s=>{ const it=s.items.find(i=>i.exId===exId&&i.steps.some(x=>x.reps.length));
+    if(it){ const st=itemStat(it); out.push({date:s.date,topKg:st.topKg,e1rm:st.e1rm,reps:st.reps,vol:st.vol,mr:topReps(it).mr}); } });
+  return out; }
+function exBestE1rm(exId){ return exSeries(exId).reduce((m,x)=>Math.max(m,x.e1rm),0); }
+function exPeriods(exId){ const map={};
+  S.sessions.forEach(s=>{ const it=s.items.find(i=>i.exId===exId&&i.steps.some(x=>x.reps.length)); if(!it)return;
+    const k=periodKey(s.date), st=itemStat(it), m=map[k]||(map[k]={topKg:0,e1rm:0,reps:0,vol:0});
+    m.topKg=Math.max(m.topKg,st.topKg); m.e1rm=Math.max(m.e1rm,st.e1rm); m.reps+=st.reps; m.vol+=st.vol; });
+  return Object.keys(map).sort().map(k=>({k,...map[k]})); }
+function exAdvice(exId){
+  const ser=exSeries(exId); if(!ser.length) return null;
+  const last=ser[ser.length-1], prev=ser[ser.length-2], name=(exOf(exId)||{}).name||"—";
+  let stag=false;
+  if(ser.length>=3){ const l3=ser.slice(-3); stag=l3.every(x=>x.topKg===last.topKg)&&l3[2].mr<=l3[0].mr; }
+  let rank,tag,cls,tip;
+  if(last.mr>=12){ rank=0; tag="Crește greutatea"; cls="up";
+    tip=`${last.mr} repetări la ${fmt(last.topKg)} kg — ești gata de +2,5 kg data viitoare.`; }
+  else if(prev&&last.e1rm>prev.e1rm*1.01){ rank=3; tag="În creștere"; cls="good";
+    tip=`Forța urcă față de data trecută. Ține ${fmt(last.topKg)} kg până atingi 12 repetări, apoi crește.`; }
+  else if(stag){ rank=1; tag="Stagnează"; cls="warn";
+    tip=`3 antrenamente la ${fmt(last.topKg)} kg fără progres — adaugă 1 repetare, mai multă odihnă, sau variază exercițiul.`; }
+  else if(prev&&last.e1rm<prev.e1rm*0.97){ rank=2; tag="În scădere"; cls="down";
+    tip=`Sub nivelul trecut — verifică somnul, odihna între serii și tehnica.`; }
+  else{ rank=4; tag="Constant"; cls="mut";
+    tip=prev?`Aproape de data trecută — țintește +1 repetare.`:`Prima oară salvat — repetă-l ca să ai cu ce compara.`; }
+  return {exId,name,last,prev,rank,tag,cls,tip};
+}
+function periodVol(){
+  const keys=periodsSeq(progPer==="week"?8:6), map={};
+  keys.forEach(k=>map[k]={vol:0,ses:0});
+  S.sessions.forEach(s=>{ const k=periodKey(s.date); if(k in map){ map[k].vol+=volume([s]); map[k].ses++; } });
+  return keys.map(k=>({k,vol:map[k].vol,ses:map[k].ses}));
+}
+function bars(data){
+  const W=324,H=118,P=2,n=data.length,gap=7, bw=(W-2*P-gap*(n-1))/n,
+    mx=Math.max(1,...data.map(d=>d.vol)); let r="";
+  data.forEach((d,idx)=>{ const x=P+idx*(bw+gap), h=d.vol?Math.max(5,(d.vol/mx)*(H-26)):3, y=H-20-h;
+    r+=`<rect class="${d.cur?"b1":"b0"}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="5"/>`;
+    r+=`<text class="bl" x="${(x+bw/2).toFixed(1)}" y="${H-5}" text-anchor="middle" font-size="9.5" font-weight="700">${esc(d.label)}</text>`; });
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Volum pe perioade">
+    <defs><linearGradient id="gbar" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#9ACFB4"/><stop offset="1" stop-color="#F6E79A"/></linearGradient></defs>${r}</svg>`;
+}
+
 function viewProg(){
   const v=volume();
   const head=weekCard()+`<div class="stats">
@@ -781,11 +871,64 @@ function viewProg(){
   const used=S.ex.filter(e=>S.sessions.some(s=>s.items.some(i=>i.exId===e.id&&i.steps.some(x=>x.reps.length))));
   if(!used.length) return head+`<div class="empty"><div class="big">Graficele apar după prima sesiune</div>
     <p>Salvează un antrenament și vezi aici cum urcă greutatea.</p></div>`;
+  return head+evoCard()+adviceCard(used)+exCard(used);
+}
+function evoCard(){
+  const seq=periodVol(), cur=seq[seq.length-1], prev=seq[seq.length-2];
+  const d=prev&&prev.vol?(cur.vol-prev.vol)/prev.vol*100:null;
+  const dcls=d==null?"flat":(d>=2?"up":d<=-2?"down":"flat");
+  const dtxt=d==null?"prima perioadă":`${d>0?"▲":d<0?"▼":"→"} ${Math.abs(Math.round(d))}% față de ${progPer==="week"?"săpt. trecută":"luna trecută"}`;
+  const nowKey=periodKey(today());
+  return `<div class="card" style="padding:16px 14px 13px">
+    <div class="cardh">Evoluție volum</div>
+    <div class="seg" style="margin-bottom:12px">
+      <button data-act="progper" data-v="week" class="${progPer==="week"?"on":""}">Săptămânal</button>
+      <button data-act="progper" data-v="month" class="${progPer==="month"?"on":""}">Lunar</button></div>
+    ${bars(seq.map(p=>({label:periodTick(p.k),vol:p.vol,cur:p.k===nowKey})))}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+      <div><div style="font-family:var(--disp);font-size:21px;font-weight:800;line-height:1">${vol1(cur.vol)}</div>
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-top:3px">${cur.ses} ${cur.ses===1?"antrenament":"antrenamente"} ${progPer==="week"?"săpt. asta":"luna asta"}</div></div>
+      <span class="delta ${dcls}">${dtxt}</span></div></div>`;
+}
+function adviceCard(used){
+  const list=used.map(e=>exAdvice(e.id)).filter(Boolean).sort((a,b)=>a.rank-b.rank);
+  const TAG={up:["#E8F4EE","#2E6B52","#90C9AE"],warn:["#FEF8DE","#8A6D08","#FCEA95"],
+    down:["#FBEDF4","#B4587C","#E79DC3"],good:["#E8EBF1","#3D4353","#536583"],mut:["#F0EFF5","#8B90A0","#C7CBD6"]};
+  const rows=list.map(a=>{ const t=TAG[a.cls];
+    return `<div class="advrow"><span class="dot" style="background:${t[2]}"></span>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <span class="nm2">${esc(a.name)}</span>
+          <span class="tg" style="background:${t[0]};color:${t[1]}">${a.tag}</span></div>
+        <div class="tp">${a.tip}</div></div></div>`; }).join("");
+  return `<div class="card" style="padding:14px 14px 8px;margin-top:14px">
+    <div class="cardh" style="margin-bottom:4px">Recomandări</div>
+    <div style="font-size:12px;color:var(--muted);margin:0 2px 6px;line-height:1.45">Pe baza ultimelor antrenamente — unde să crești și ce stagnează.</div>
+    ${rows}</div>`;
+}
+function exCard(used){
   const pick=S.progEx&&used.some(e=>e.id===S.progEx)?S.progEx:used[used.length-1].id;
-  return head+`<button class="pick" data-act="pickprog" style="margin-bottom:12px">
-    <div style="flex:1;min-width:0"><div class="nm">${esc(exOf(pick).name)}</div>
-    <div class="mt">Record: ${fmt(best(pick))} kg</div></div><span class="go">▾</span></button>
-    <div class="card chart">${chartEx(pick)}</div>`;
+  const mets=[["weight","Greutate"],["e1rm","Forță ~1RM"],["vol","Volum"]];
+  return `<div class="cardh" style="margin:20px 2px 10px">Pe exercițiu</div>
+    <button class="pick" data-act="pickprog" style="margin-bottom:10px">
+      <div style="flex:1;min-width:0"><div class="nm">${esc(exOf(pick).name)}</div>
+      <div class="mt">Record ${fmt(best(pick))} kg · forță ~1RM ${fmt(exBestE1rm(pick))} kg</div></div><span class="go">▾</span></button>
+    <div class="seg" style="margin-bottom:12px">
+      ${mets.map(m=>`<button data-act="progmet" data-v="${m[0]}" class="${progMetric===m[0]?"on":""}">${m[1]}</button>`).join("")}</div>
+    <div class="card chart">${chartEx(pick)}</div>
+    ${exTable(pick)}`;
+}
+function exTable(exId){
+  const ps=exPeriods(exId); if(ps.length<2) return "";
+  const show=ps.slice(-6).reverse();
+  const rows=show.map((p,idx)=>{ const older=show[idx+1]; let arrow="";
+    if(older){ const dd=p.e1rm-older.e1rm;
+      arrow=dd>0.3?' <span style="color:#2E6B52">▲</span>':dd<-0.3?' <span style="color:var(--pink-d)">▼</span>':' <span style="color:var(--muted-2)">→</span>'; }
+    return `<tr><td>${periodLabel(p.k)}</td><td>${fmt(p.topKg)}</td><td>${fmt(p.e1rm)}${arrow}</td><td>${p.reps}</td><td>${vol1(p.vol)}</td></tr>`; }).join("");
+  return `<div class="card" style="padding:12px 12px 10px;margin-top:12px">
+    <table class="ptab"><thead><tr><th>${progPer==="week"?"Săpt.":"Luna"}</th><th>Max</th><th>~1RM</th><th>Rep.</th><th>Volum</th></tr></thead>
+    <tbody>${rows}</tbody></table>
+    <div class="hint" style="padding:10px 4px 2px;text-align:left">~1RM = forța estimată pentru o singură repetare (din greutate × repetări). Urcă și când crești repetările, nu doar greutatea.</div></div>`;
 }
 function line(pts,stroke,fill){
   const W=300,H=110,P=6;
@@ -802,14 +945,18 @@ function line(pts,stroke,fill){
       fill="${p.v>=mx?"#B4587C":stroke}"/>`).join("")}</svg>`};
 }
 function chartEx(exId){
-  const pts=[];
-  S.sessions.forEach(s=>{ const it=s.items.find(i=>i.exId===exId&&i.steps.some(x=>x.reps.length));
-    if(it) pts.push({d:s.date,v:Math.max(...it.steps.filter(x=>x.reps.length).map(x=>x.kg))}); });
-  if(pts.length<2) return `<div class="hint" style="padding:26px 10px">Un singur punct deocamdată — linia apare după a doua sesiune.</div>`;
-  const c=line(pts,"#536583","#E79DC3");
+  const ser=exSeries(exId);
+  if(ser.length<2) return `<div class="hint" style="padding:26px 10px">Un singur punct deocamdată — linia apare după a doua sesiune.</div>`;
+  const valOf=progMetric==="weight"?(x=>x.topKg):progMetric==="vol"?(x=>x.vol):(x=>x.e1rm);
+  const col=progMetric==="weight"?["#536583","#E79DC3"]:progMetric==="vol"?["#3f8f7a","#9ACFB4"]:["#B4587C","#E79DC3"];
+  const pts=ser.map(x=>({d:x.date,v:valOf(x)}));
+  const c=line(pts,col[0],col[1]);
+  const base=valOf(ser[0]), now=valOf(ser[ser.length-1]);
+  const gain=base?Math.round((now-base)/base*100):0;
+  const fmtv=v=>progMetric==="vol"?vol1(v):fmt(v)+" kg";
   return c.svg+`<div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);padding:8px 2px 4px">
-    <span>${fmt(c.mn)} kg · ${new Date(pts[0].d+"T12:00:00").toLocaleDateString("ro-RO",{day:"numeric",month:"short"})}</span>
-    <span style="color:var(--pink-d);font-weight:700">${fmt(c.mx)} kg maxim</span></div>`;
+    <span>${new Date(ser[0].date+"T12:00:00").toLocaleDateString("ro-RO",{day:"numeric",month:"short"})}: ${fmtv(base)}</span>
+    <span style="color:var(--pink-d);font-weight:700">acum ${fmtv(now)}${base?` · ${gain>=0?"+":""}${gain}%`:""}</span></div>`;
 }
 
 /* ---- EXERCIȚII ---- */
@@ -1206,6 +1353,8 @@ document.addEventListener("click",async ev=>{
       <div style="flex:1;min-width:0"><div class="nm">${esc(e.name)}</div><div class="mt">record ${fmt(best(e.id))} kg</div></div>
       <span class="go">›</span></button>`).join("")); return; }
   if(A==="setprog"){ S.progEx=b.dataset.id; close(); pushProfile(); render(); return; }
+  if(A==="progper"){ progPer=b.dataset.v; render(); return; }
+  if(A==="progmet"){ progMetric=b.dataset.v; render(); return; }
 
   /* --- exerciții --- */
   if(A==="exinfo"){ const e=exOf(b.dataset.id), ld=lastDone(e.id);
