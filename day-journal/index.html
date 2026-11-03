@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Day Log</title>
+<meta name="description" content="Login of the day și logout of the day — jurnal zilnic simplu.">
+<meta name="theme-color" content="#f6f1ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1714" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Day Log">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<style>
+:root {
+  --bg: #f6f1ea;
+  --card: #fffdf9;
+  --ink: #2a2420;
+  --muted: #8a7f75;
+  --line: #e7ddd1;
+  --sun: #e8954a;
+  --sun-soft: #fbe9d7;
+  --moon: #5b5fa8;
+  --moon-soft: #e6e6f5;
+  --pro: #3f8f7a;
+  --pers: #c4577a;
+  --radius: 18px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1714;
+    --card: #24201c;
+    --ink: #f1ebe4;
+    --muted: #9b9086;
+    --line: #36302a;
+    --sun: #f0a25c;
+    --sun-soft: #3a2b1d;
+    --moon: #9a9ee6;
+    --moon-soft: #262842;
+    --pro: #5fbfa4;
+    --pers: #e47f9f;
+  }
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); }
+body {
+  font: 17px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  padding: env(safe-area-inset-top) 0 calc(76px + env(safe-area-inset-bottom));
+  min-height: 100vh;
+}
+main { max-width: 560px; margin: 0 auto; padding: 12px 16px 24px; }
+h1 { font-size: 30px; line-height: 1.15; margin: 14px 0 2px; letter-spacing: -0.02em; }
+.sub { color: var(--muted); margin: 0 0 18px; font-size: 15px; }
+.daynav { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.daynav button { background: none; border: 0; color: var(--muted); font-size: 22px; padding: 8px 6px; cursor: pointer; }
+.daynav button[disabled] { opacity: .25; }
+
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 16px; margin-bottom: 16px;
+}
+.card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.badge {
+  width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; font-size: 19px; flex: none;
+}
+.login .badge { background: var(--sun-soft); }
+.logout .badge { background: var(--moon-soft); }
+.card-head h2 { font-size: 18px; margin: 0; }
+.card-head small { display: block; color: var(--muted); font-size: 13px; font-weight: 400; }
+.card-head .saved { margin-left: auto; color: var(--muted); font-size: 12px; opacity: 0; transition: opacity .3s; }
+.card-head .saved.show { opacity: 1; }
+.card.now.login { border-color: var(--sun); }
+.card.now.logout { border-color: var(--moon); }
+
+textarea {
+  width: 100%; min-height: 120px; resize: none; border: 0; outline: 0; background: transparent;
+  color: var(--ink); font: inherit; padding: 4px 0; overflow: hidden;
+}
+textarea::placeholder { color: var(--muted); opacity: .7; }
+
+.rating { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.rating-label { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); margin-bottom: 6px; }
+.rating-label b { color: var(--ink); font-size: 15px; }
+.dots { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; margin-bottom: 12px; }
+.dots button {
+  aspect-ratio: 1; border-radius: 50%; border: 1.5px solid var(--line); background: transparent;
+  color: var(--muted); font: 600 13px/1 inherit; font-family: inherit; padding: 0; cursor: pointer;
+}
+.dots.pro button.on { background: var(--pro); border-color: var(--pro); color: #fff; }
+.dots.pers button.on { background: var(--pers); border-color: var(--pers); color: #fff; }
+
+/* history */
+.empty { color: var(--muted); text-align: center; padding: 40px 10px; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+.stat small { color: var(--muted); font-size: 13px; display: block; }
+.stat b { font-size: 26px; }
+.stat.pro b { color: var(--pro); }
+.stat.pers b { color: var(--pers); }
+.chart { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 10px 6px; margin-bottom: 16px; }
+.chart svg { width: 100%; height: 120px; display: block; }
+.legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); padding: 4px 4px 2px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+.entry {
+  display: block; width: 100%; text-align: left; background: var(--card); border: 1px solid var(--line);
+  border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; color: var(--ink); font: inherit; cursor: pointer;
+}
+.entry-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.entry-date { font-weight: 600; }
+.pill { font-size: 13px; padding: 2px 8px; border-radius: 99px; color: #fff; margin-left: 4px; }
+.pill.pro { background: var(--pro); }
+.pill.pers { background: var(--pers); }
+.entry p { margin: 6px 0 0; color: var(--muted); font-size: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* settings */
+.settings h3 { font-size: 16px; margin: 0 0 8px; }
+.settings p, .settings li { color: var(--muted); font-size: 15px; }
+.settings ol { padding-left: 20px; margin: 6px 0; }
+.btn {
+  display: block; width: 100%; padding: 13px; border-radius: 12px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--ink); font: 600 16px inherit; font-family: inherit; margin-top: 8px; cursor: pointer;
+}
+.btn.danger { color: #c0392b; }
+
+/* tab bar */
+nav.tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: center;
+  background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line); padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+}
+nav.tabs button {
+  flex: 1; max-width: 180px; background: none; border: 0; color: var(--muted); font: 500 11px inherit; font-family: inherit;
+  display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px; cursor: pointer;
+}
+nav.tabs button span { font-size: 22px; filter: grayscale(1); opacity: .6; }
+nav.tabs button.on { color: var(--ink); }
+nav.tabs button.on span { filter: none; opacity: 1; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <!-- TODAY / DAY VIEW -->
+  <section id="view-day">
+    <div class="daynav">
+      <button id="prev" aria-label="Ziua anterioară">‹</button>
+      <div style="flex:1">
+        <h1 id="day-title">Azi</h1>
+        <p class="sub" id="day-sub"></p>
+      </div>
+      <button id="next" aria-label="Ziua următoare">›</button>
+    </div>
+
+    <div class="card login" id="card-login">
+      <div class="card-head">
+        <div class="badge">☀️</div>
+        <h2>Login of the day<small>Cu ce intri în zi?</small></h2>
+        <span class="saved" id="saved-login">salvat ✓</span>
+      </div>
+      <textarea id="login" placeholder="Scrie liber — highlight-uri, intenții, cum te simți, ce vrei să se întâmple azi…"></textarea>
+    </div>
+
+    <div class="card logout" id="card-logout">
+      <div class="card-head">
+        <div class="badge">🌙</div>
+        <h2>Logout of the day<small>Cum a fost, de fapt?</small></h2>
+        <span class="saved" id="saved-logout">salvat ✓</span>
+      </div>
+      <textarea id="logout" placeholder="Ce a ieșit bine, ce nu, ce iei cu tine din ziua asta…"></textarea>
+      <div class="rating">
+        <div class="rating-label"><span>💼 Profesional</span><b id="pro-val">–</b></div>
+        <div class="dots pro" id="dots-pro"></div>
+        <div class="rating-label"><span>🌿 Personal</span><b id="pers-val">–</b></div>
+        <div class="dots pers" id="dots-pers" style="margin-bottom:0"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section id="view-history" hidden>
+    <h1>Istoric</h1>
+    <p class="sub">Zilele tale, pe scurt.</p>
+    <div id="history"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="view-settings" hidden class="settings">
+    <h1>Setări</h1>
+    <p class="sub">Notificări și backup.</p>
+
+    <div class="card">
+      <h3>🔔 Notificări dimineața și seara</h3>
+      <p>Cel mai simplu și sigur pe iPhone: două mementouri zilnice în aplicația <b>Mementouri (Reminders)</b>.</p>
+      <ol>
+        <li>Deschide <b>Mementouri</b> → memento nou: <i>„☀️ Login of the day”</i></li>
+        <li>Apasă <b>ⓘ</b> → activează <b>Dată</b> și <b>Oră</b> (ex. 8:00) → <b>Repetă: Zilnic</b>.</li>
+        <li>Fă la fel cu <i>„🌙 Logout of the day”</i> seara (ex. 21:30).</li>
+      </ol>
+      <p>Când vine notificarea, deschizi Day Log de pe ecranul principal și scrii.</p>
+    </div>
+
+    <div class="card">
+      <h3>💾 Backup</h3>
+      <p>Datele stau doar pe telefonul tău, în aplicație. Fă din când în când un export ca să nu le pierzi.</p>
+      <button class="btn" id="export">Exportă jurnalul (.json)</button>
+      <button class="btn" id="import-btn">Importă din backup</button>
+      <input type="file" id="import" accept="application/json,.json" hidden>
+      <p id="count" style="font-size:13px;margin-top:12px"></p>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs">
+  <button data-view="day" class="on"><span>📝</span>Azi</button>
+  <button data-view="history"><span>📚</span>Istoric</button>
+  <button data-view="settings"><span>⚙️</span>Setări</button>
+</nav>
+
+<script>
+(() => {
+  const KEY = 'daylog.v1';
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- storage ----------
+  let db = {};
+  try { db = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { db = {}; }
+  const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch {} };
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+
+  // ---------- dates ----------
+  const pad = (n) => String(n).padStart(2, '0');
+  const keyOf = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const fromKey = (k) => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+  const todayKey = () => keyOf(new Date());
+  const fmtLong = new Intl.DateTimeFormat('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' });
+  const fmtShort = new Intl.DateTimeFormat('ro-RO', { weekday: 'short', day: 'numeric', month: 'short' });
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const addDays = (k, n) => { const d = fromKey(k); d.setDate(d.getDate() + n); return keyOf(d); };
+
+  // ---------- day view ----------
+  let current = todayKey();
+  const entry = (k) => db[k] || (db[k] = { login: '', logout: '', pro: null, pers: null });
+  const clean = (k) => { const e = db[k]; if (e && !e.login && !e.logout && e.pro == null && e.pers == null) delete db[k]; };
+
+  function grow(t) { t.style.height = 'auto'; t.style.height = Math.max(120, t.scrollHeight) + 'px'; }
+
+  function buildDots(el, field) {
+    el.innerHTML = '';
+    for (let i = 1; i <= 10; i++) {
+      const b = document.createElement('button');
+      b.textContent = i;
+      b.onclick = () => {
+        const e = entry(current);
+        e[field] = e[field] === i ? null : i; // tap again to clear
+        e.updated = Date.now();
+        clean(current); persist(); renderRatings(); flash('logout');
+      };
+      el.appendChild(b);
+    }
+  }
+  buildDots($('dots-pro'), 'pro');
+  buildDots($('dots-pers'), 'pers');
+
+  function renderRatings() {
+    const e = db[current] || {};
+    [['dots-pro', 'pro', 'pro-val'], ['dots-pers', 'pers', 'pers-val']].forEach(([id, f, v]) => {
+      [...$(id).children].forEach((b, i) => b.classList.toggle('on', e[f] != null && i < e[f]));
+      $(v).textContent = e[f] != null ? `${e[f]}/10` : '–';
+    });
+  }
+
+  function renderDay() {
+    const t = todayKey();
+    const e = db[current] || {};
+    const d = fromKey(current);
+    $('day-title').textContent = current === t ? 'Azi' : current === addDays(t, -1) ? 'Ieri' : cap(fmtShort.format(d));
+    $('day-sub').textContent = cap(fmtLong.format(d));
+    $('next').disabled = current >= t;
+    $('login').value = e.login || '';
+    $('logout').value = e.logout || '';
+    grow($('login')); grow($('logout'));
+    renderRatings();
+    // highlight the card that fits the time of day (today only)
+    const h = new Date().getHours();
+    const morning = h >= 4 && h < 15;
+    $('card-login').classList.toggle('now', current === t && morning);
+    $('card-logout').classList.toggle('now', current === t && !morning);
+    // in the evening, show logout first
+    const view = $('view-day');
+    if (current === t && !morning) view.insertBefore($('card-logout'), $('card-login'));
+    else view.insertBefore($('card-login'), $('card-logout'));
+  }
+
+  const timers = {};
+  function flash(which) {
+    const el = $('saved-' + which);
+    el.classList.add('show');
+    clearTimeout(timers['f' + which]);
+    timers['f' + which] = setTimeout(() => el.classList.remove('show'), 1200);
+  }
+
+  ['login', 'logout'].forEach((f) => {
+    const t = $(f);
+    t.addEventListener('input', () => {
+      grow(t);
+      const k = current, val = t.value;
+      clearTimeout(timers[f]);
+      timers[f] = setTimeout(() => {
+        const e = entry(k); e[f] = val; e.updated = Date.now();
+        clean(k); persist(); flash(f);
+      }, 350);
+    });
+    t.addEventListener('blur', () => { // make sure nothing is lost
+      clearTimeout(timers[f]);
+      const e = entry(current); e[f] = t.value; clean(current); persist();
+    });
+  });
+
+  $('prev').onclick = () => { current = addDays(current, -1); renderDay(); };
+  $('next').onclick = () => { if (current < todayKey()) { current = addDays(current, 1); renderDay(); } };
+
+  // ---------- history ----------
+  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const avg = (a) => a.length ? (a.reduce((x, y) => x + y, 0) / a.length) : null;
+
+  function chart(keys) {
+    // last 30 days, two lines
+    const t = todayKey();
+    const days = [...Array(30)].map((_, i) => addDays(t, i - 29));
+    const W = 300, H = 110, P = 8;
+    const x = (i) => P + (i * (W - 2 * P)) / 29;
+    const y = (v) => H - P - ((v - 1) * (H - 2 * P)) / 9;
+    const line = (f, color) => {
+      let d = '', dots = '';
+      days.forEach((k, i) => {
+        const v = db[k] && db[k][f];
+        if (v != null) {
+          d += (d ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1);
+          dots += `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="2.6" fill="${color}"/>`;
+        }
+      });
+      return `<path d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity=".85"/>${dots}`;
+    };
+    const cs = getComputedStyle(document.documentElement);
+    const pro = cs.getPropertyValue('--pro').trim(), pers = cs.getPropertyValue('--pers').trim(), ln = cs.getPropertyValue('--line').trim();
+    const grid = [1, 5, 10].map((v) => `<line x1="${P}" x2="${W - P}" y1="${y(v)}" y2="${y(v)}" stroke="${ln}" stroke-dasharray="3 4"/>`).join('');
+    return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${grid}${line('pro', pro)}${line('pers', pers)}</svg>
+      <div class="legend"><span><i style="background:${pro}"></i>Profesional</span><span><i style="background:${pers}"></i>Personal</span><span style="margin-left:auto">ultimele 30 de zile</span></div></div>`;
+  }
+
+  function renderHistory() {
+    const keys = Object.keys(db).sort().reverse();
+    if (!keys.length) { $('history').innerHTML = '<div class="empty">Încă nimic aici.<br>Prima zi scrisă va apărea în istoric. ✨</div>'; return; }
+    const last30 = keys.filter((k) => k > addDays(todayKey(), -30));
+    const ap = avg(last30.map((k) => db[k].pro).filter((v) => v != null));
+    const as = avg(last30.map((k) => db[k].pers).filter((v) => v != null));
+    let html = `<div class="stats">
+      <div class="stat pro"><small>💼 Profesional · medie</small><b>${ap != null ? ap.toFixed(1) : '–'}</b></div>
+      <div class="stat pers"><small>🌿 Personal · medie</small><b>${as != null ? as.toFixed(1) : '–'}</b></div></div>`;
+    html += chart(keys);
+    html += keys.map((k) => {
+      const e = db[k];
+      const text = [e.login, e.logout].filter(Boolean).join(' · ');
+      return `<button class="entry" data-k="${k}">
+        <div class="entry-top"><span class="entry-date">${cap(fmtShort.format(fromKey(k)))}</span>
+        <span>${e.pro != null ? `<span class="pill pro">${e.pro}</span>` : ''}${e.pers != null ? `<span class="pill pers">${e.pers}</span>` : ''}</span></div>
+        ${text ? `<p>${esc(text)}</p>` : ''}</button>`;
+    }).join('');
+    $('history').innerHTML = html;
+    $('history').querySelectorAll('.entry').forEach((b) => b.onclick = () => { current = b.dataset.k; show('day'); });
+  }
+
+  // ---------- settings ----------
+  function renderSettings() {
+    const n = Object.keys(db).length;
+    $('count').textContent = `${n} ${n === 1 ? 'zi salvată' : 'zile salvate'}.`;
+  }
+  $('export').onclick = async () => {
+    const blob = new Blob([JSON.stringify({ app: 'daylog', version: 1, exported: new Date().toISOString(), days: db }, null, 2)], { type: 'application/json' });
+    const name = `daylog-${todayKey()}.json`;
+    const file = new File([blob], name, { type: 'application/json' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: 'Day Log backup' }); return; } catch (e) { if (e.name === 'AbortError') return; }
+    }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  };
+  $('import-btn').onclick = () => $('import').click();
+  $('import').onchange = async (ev) => {
+    const f = ev.target.files[0]; if (!f) return;
+    try {
+      const data = JSON.parse(await f.text());
+      const days = data.days || data;
+      if (typeof days !== 'object') throw 0;
+      let added = 0;
+      for (const [k, e] of Object.entries(days)) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) continue;
+        const cur = db[k];
+        if (!cur || (e.updated || 0) >= (cur.updated || 0)) { db[k] = e; added++; }
+      }
+      persist(); renderSettings();
+      alert(`Gata! ${added} zile importate.`);
+    } catch { alert('Fișierul nu pare a fi un backup Day Log.'); }
+    ev.target.value = '';
+  };
+
+  // ---------- navigation ----------
+  function show(view) {
+    document.querySelectorAll('nav.tabs button').forEach((b) => b.classList.toggle('on', b.dataset.view === view));
+    ['day', 'history', 'settings'].forEach((v) => $('view-' + v).hidden = v !== view);
+    if (view === 'day') renderDay();
+    if (view === 'history') renderHistory();
+    if (view === 'settings') renderSettings();
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('nav.tabs button').forEach((b) => b.onclick = () => {
+    if (b.dataset.view === 'day') current = todayKey();
+    show(b.dataset.view);
+  });
+
+  // when the app comes back to the foreground on a new day, jump to today
+  let lastToday = todayKey();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && todayKey() !== lastToday) {
+      lastToday = todayKey(); current = lastToday;
+      if (!$('view-day').hidden) renderDay();
+    }
+  });
+
+  renderDay();
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+</script>
+</body>
+</html>
