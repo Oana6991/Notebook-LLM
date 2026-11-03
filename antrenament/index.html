@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="ro">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#F2F3F6">
+<meta name="description" content="Jurnal de antrenament — trepte de greutate, serii, recorduri.">
+<title>Sala — jurnal de antrenament</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Sala">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAF8FB;
+  --card:#FFFFFF;
+  --ink:#232734;
+  --ink-2:#3D4353;
+  --muted:#8B90A0;
+  --muted-2:#AAAEBC;
+  --line:#F1F0F5;
+  --wash:#F5F4F9;
+  --pink:#E79DC3;
+  --pink-s:#FBEDF4;
+  --pink-d:#B4587C;
+  --yellow:#FCEA95;
+  --yellow-s:#FEF8DE;
+  --mint:#90C9AE;
+  --mint-s:#E8F4EE;
+  --slate:#536583;
+  --slate-s:#E8EBF1;
+  --go:linear-gradient(105deg,#9ACFB4 0%,#C6E2A6 55%,#F6E79A 100%);
+  --disp:'Gabarito','Plus Jakarta Sans',system-ui,sans-serif;
+  --body:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --r:26px;
+  --sh:0 1px 2px rgba(83,101,131,.04), 0 10px 28px -14px rgba(83,101,131,.30);
+  --sh-l:0 2px 6px rgba(83,101,131,.05), 0 18px 40px -18px rgba(83,101,131,.38);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.45;letter-spacing:-.005em;
+  padding-bottom:calc(160px + env(safe-area-inset-bottom));overscroll-behavior-y:none}
+button,input{font-family:inherit;color:inherit;font-size:inherit}
+button{border:0;background:none;cursor:pointer}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:40;
+  background:linear-gradient(var(--paper) 74%,rgba(250,248,251,0));
+  padding:calc(14px + env(safe-area-inset-top)) 0 12px}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.htitle{font-family:var(--disp);font-weight:800;font-size:26px;letter-spacing:-.035em;line-height:1}
+.hsub{font-size:11.5px;color:var(--muted);font-weight:600;background:var(--card);
+  padding:7px 13px;border-radius:999px;box-shadow:var(--sh);white-space:nowrap}
+.hsub:empty{display:none}
+.mark-hl{background:var(--yellow);border-radius:7px;padding:0 7px;box-decoration-break:clone}
+
+/* ---------- carduri ---------- */
+.card{background:var(--card);border-radius:var(--r);margin-bottom:14px;
+  overflow:hidden;box-shadow:var(--sh)}
+.card-h{display:flex;align-items:center;gap:13px;padding:17px 17px 14px}
+.card-h h3{margin:0;font-size:16.5px;font-weight:700;line-height:1.25;flex:1;letter-spacing:-.02em}
+.last{font-size:12.5px;color:var(--muted);margin-top:4px;font-weight:500;font-variant-numeric:tabular-nums}
+.gicon{width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center}
+.gicon svg{width:23px;height:23px;stroke:var(--ink);fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.g0{background:var(--mint-s)}.g1{background:var(--pink-s)}.g2{background:var(--slate-s)}
+.g3{background:var(--yellow-s)}.g4{background:#EFEAF7}.g5{background:#FCEDE4}.g6{background:var(--wash)}
+.kebab{width:36px;height:36px;border-radius:50%;color:var(--muted-2);flex:none;
+  display:grid;place-items:center;font-size:19px}
+.kebab:active{background:var(--wash)}
+.tutbtn{background:var(--mint-s);color:var(--ink)}
+.tutbtn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;
+  stroke-linejoin:round}
+.card-h{gap:9px}
+
+/* ---------- trepte ---------- */
+.step{display:flex;gap:12px;padding:12px 17px 12px 12px;align-items:flex-start}
+.step+.step{border-top:1px solid var(--line)}
+.rail{width:5px;border-radius:999px;flex:none;align-self:stretch;background:var(--wash);min-height:44px}
+.rail.p1{background:var(--mint)}.rail.p2{background:var(--yellow)}
+.rail.p3{background:var(--pink)}.rail.p4{background:var(--slate)}
+.stepbody{flex:1;min-width:0}
+.wt{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.wtnum{font-family:var(--disp);font-size:27px;font-weight:800;line-height:1;letter-spacing:-.055em;
+  min-width:66px;text-align:center;padding:3px 5px;border-radius:13px;font-variant-numeric:tabular-nums}
+.wtnum:active{background:var(--wash)}
+.unit{font-size:11px;color:var(--muted-2);font-weight:700;margin-left:-5px}
+.rnd{width:40px;height:40px;border-radius:50%;background:var(--wash);
+  display:grid;place-items:center;font-size:21px;font-weight:600;color:var(--ink-2);flex:none;line-height:0}
+.rnd:active{background:var(--mint);transform:scale(.92)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{min-width:50px;height:42px;padding:0 12px;border-radius:15px;background:var(--wash);
+  font-family:var(--disp);font-size:17px;font-weight:700;letter-spacing:-.04em;
+  display:grid;place-items:center;font-variant-numeric:tabular-nums}
+.chip.on{background:var(--mint);color:#1E3A2C}
+.chip.rec{box-shadow:inset 0 0 0 2px var(--pink)}
+.chip.add{color:var(--muted);font-size:20px;background:none;box-shadow:inset 0 0 0 1.5px var(--line)}
+.editbar{display:flex;align-items:center;gap:10px;margin-top:11px;padding:8px;
+  border-radius:19px;background:var(--mint-s)}
+.editbar .lbl{flex:1;font-size:11.5px;color:#3B6353;letter-spacing:.05em;text-transform:uppercase;font-weight:800}
+.editbar .rnd{background:#fff}
+.del{width:40px;height:40px;border-radius:50%;color:var(--pink-d);display:grid;place-items:center;font-size:16px}
+.addstep{display:block;width:100%;text-align:left;padding:14px 17px 16px;
+  border-top:1px solid var(--line);color:var(--muted);font-size:13.5px;font-weight:700}
+.addstep:active{background:var(--wash)}
+
+/* ---------- butoane ---------- */
+.btn{display:block;width:100%;padding:17px;border-radius:999px;background:var(--go);color:var(--ink);
+  font-weight:800;font-size:15.5px;text-align:center;letter-spacing:-.015em;
+  box-shadow:0 8px 20px -10px rgba(122,168,140,.9)}
+.btn:active{transform:translateY(1px);filter:brightness(.97)}
+.btn.ghost{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
+.btn.quiet{background:none;box-shadow:inset 0 0 0 1.5px var(--line);color:var(--muted)}
+.btn.danger{background:var(--pink-s);color:var(--pink-d);box-shadow:none}
+.btn[disabled]{opacity:.55}
+
+/* ---------- gol ---------- */
+.empty{text-align:center;padding:26px 20px 30px}
+.empty .big{font-family:var(--disp);font-size:21px;font-weight:800;letter-spacing:-.04em;
+  margin-bottom:8px;line-height:1.2}
+.empty p{margin:0 0 18px;font-size:14px;color:var(--muted);font-weight:500}
+
+/* ---------- citat ---------- */
+.quote{border-radius:var(--r);padding:22px 20px 18px;margin-bottom:14px;position:relative;
+  background:var(--yellow);overflow:hidden;box-shadow:var(--sh)}
+.quote.c1{background:var(--pink)}.quote.c2{background:var(--mint)}.quote.c3{background:var(--yellow)}
+.quote .mark{position:absolute;right:12px;top:-18px;font-family:var(--disp);font-size:96px;
+  font-weight:800;color:rgba(35,39,52,.09);line-height:1;user-select:none;pointer-events:none}
+.quote .q{font-family:var(--disp);font-size:18px;font-weight:800;letter-spacing:-.035em;
+  line-height:1.3;position:relative;z-index:1;padding-right:22px}
+.quote .day{font-size:11px;font-weight:700;color:rgba(35,39,52,.5);margin-top:13px}
+
+/* ---------- bara de jos ---------- */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:22px 0 calc(10px + env(safe-area-inset-bottom));
+  background:linear-gradient(rgba(250,248,251,0),var(--paper) 34px);pointer-events:none}
+.dock>*{pointer-events:auto}
+.rest{margin:0 auto 9px;max-width:528px;display:flex;align-items:center;gap:11px;
+  background:var(--card);border-radius:999px;padding:10px 10px 10px 18px;box-shadow:var(--sh-l)}
+.rest.done{background:var(--mint)}
+.rest .t{font-family:var(--disp);font-size:20px;font-weight:800;letter-spacing:-.05em;
+  font-variant-numeric:tabular-nums;line-height:1}
+.rest .lbl{flex:1;font-size:11.5px;color:var(--muted);font-weight:700}
+.rest.done .lbl{color:#2C4A3B}
+.rest button{font-size:12.5px;font-weight:800;color:var(--ink-2);padding:9px 12px;
+  background:var(--wash);border-radius:999px}
+.rest.done button{background:rgba(255,255,255,.55)}
+.dockmain{max-width:528px;margin:0 auto;display:flex;gap:9px;padding:0 16px 10px}
+.dockmain>*{flex:1}
+nav{display:flex;align-items:center;justify-content:center;gap:2px;margin:0 auto;
+  background:var(--card);border-radius:999px;padding:7px;box-shadow:var(--sh-l);width:fit-content;max-width:calc(100% - 32px)}
+nav button{width:42px;height:42px;border-radius:999px;color:var(--muted-2);flex:none;
+  display:flex;align-items:center;justify-content:center;gap:7px;overflow:hidden;
+  transition:width .18s ease, background .18s ease}
+nav button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round;flex:none}
+@media (max-width:359px){
+  nav button.on{width:42px;padding:0}
+  nav button.on span{display:none}
+}
+nav button span{display:none;font-size:12.5px;font-weight:800;letter-spacing:-.02em}
+nav button.on{background:var(--go);color:var(--ink);width:auto;padding:0 15px 0 11px}
+nav button.on span{display:block}
+.pending{max-width:528px;margin:0 auto 9px;display:flex;align-items:center;gap:9px;
+  background:var(--pink);border-radius:999px;padding:11px 18px;font-size:12.5px;
+  font-weight:700;color:#4A2237;box-shadow:var(--sh)}
+
+/* ---------- foaie modală ---------- */
+.scrim{position:fixed;inset:0;background:rgba(35,39,52,.34);z-index:60;
+  display:flex;align-items:flex-end;justify-content:center;animation:fade .16s ease;backdrop-filter:blur(3px)}
+.sheet{background:var(--paper);width:100%;max-width:560px;border-radius:30px 30px 0 0;
+  max-height:88vh;display:flex;flex-direction:column;animation:up .22s cubic-bezier(.2,.8,.3,1);
+  padding-bottom:env(safe-area-inset-bottom)}
+@keyframes up{from{transform:translateY(30px);opacity:.6}}
+@keyframes fade{from{opacity:0}}
+.grab{width:44px;height:5px;background:var(--line);border-radius:99px;margin:11px auto 4px;flex:none}
+.sheet h2{font-family:var(--disp);font-size:19px;letter-spacing:-.04em;margin:10px 20px 14px;font-weight:800}
+.sheet .scroll{overflow-y:auto;padding:0 14px 16px;-webkit-overflow-scrolling:touch}
+.srch{width:100%;padding:16px 18px;border-radius:999px;background:var(--card);
+  border:0;margin:0 0 12px;outline:none;font-weight:600;box-shadow:var(--sh)}
+.srch:focus{box-shadow:var(--sh),0 0 0 2px var(--mint)}
+.grouplbl{font-size:11px;color:var(--muted-2);letter-spacing:.08em;text-transform:uppercase;
+  font-weight:800;margin:18px 8px 9px}
+.pick{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 16px;
+  border-radius:22px;background:var(--card);margin-bottom:8px;box-shadow:var(--sh)}
+.pick:active{background:var(--mint-s)}
+.pick .nm{flex:1;font-size:15px;font-weight:700;line-height:1.25;letter-spacing:-.02em}
+.pick .mt{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:3px;font-weight:500}
+.pick .go{color:var(--muted-2);font-size:19px}
+
+/* ---------- istoric ---------- */
+.sess{padding:17px 17px 14px}
+.sess .d{font-family:var(--disp);font-size:17px;font-weight:800;letter-spacing:-.04em}
+.sess .m{font-size:12.5px;color:var(--muted);margin-top:3px;font-weight:500;font-variant-numeric:tabular-nums}
+.line{font-size:14px;padding:9px 0;border-top:1px solid var(--line);display:flex;gap:10px}
+.line .n{flex:1;min-width:0;font-weight:600}
+.line .v{color:var(--muted);font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;
+  text-align:right;flex:none;max-width:52%}
+
+/* ---------- statistici / grafice ---------- */
+.stats{display:flex;gap:10px;margin-bottom:14px}
+.stat{flex:1;border-radius:22px;padding:15px 13px;box-shadow:var(--sh)}
+.stat:nth-child(1){background:var(--pink)}
+.stat:nth-child(2){background:var(--yellow)}
+.stat:nth-child(3){background:var(--mint)}
+.stat .v{font-family:var(--disp);font-size:25px;font-weight:800;line-height:1;
+  letter-spacing:-.055em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.stat .k{font-size:10.5px;font-weight:700;margin-top:7px;color:rgba(35,39,52,.55)}
+.chart{padding:16px 14px 10px}
+svg.ch{width:100%;height:148px;display:block;overflow:visible}
+.recbadge{display:inline-flex;align-items:center;gap:4px;background:var(--pink);
+  color:#4A2237;border-radius:999px;padding:4px 11px;font-size:10.5px;font-weight:800}
+.week{padding:18px 18px 16px}
+.week .top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+.week .n{font-family:var(--disp);font-size:32px;font-weight:800;letter-spacing:-.06em;line-height:.95}
+.week .n small{font-size:14px;font-weight:700;color:var(--muted);letter-spacing:-.02em}
+.week .lbl{font-size:11.5px;color:var(--muted);font-weight:700}
+.bars{display:flex;align-items:flex-end;gap:7px;height:78px}
+.bars div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:7px}
+.bars i{display:block;border-radius:999px;background:var(--wash);min-height:7px}
+.bars b{font-size:10px;font-weight:700;color:var(--muted-2);text-align:center;font-style:normal}
+.bars .on i{background:var(--go)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:200px;z-index:90;
+  background:var(--ink);color:#fff;padding:13px 20px;border-radius:999px;font-weight:700;
+  font-size:14px;box-shadow:0 12px 30px rgba(35,39,52,.3)}
+.hint{font-size:12.5px;color:var(--muted-2);text-align:center;padding:8px 14px 16px;
+  line-height:1.55;font-weight:500}
+
+/* ---------- profil ---------- */
+.hero{display:flex;align-items:center;gap:16px;padding:20px 18px}
+.avring{position:relative;width:78px;height:78px;flex:none}
+.avring svg{position:absolute;inset:0}
+.av{position:absolute;inset:7px;border-radius:50%;display:grid;place-items:center;
+  font-size:29px;background:var(--yellow-s);overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
+.avpct{position:absolute;right:-6px;bottom:-2px;background:var(--card);border-radius:999px;
+  padding:3px 8px;font-size:10.5px;font-weight:800;box-shadow:var(--sh);
+  font-variant-numeric:tabular-nums;color:var(--ink)}
+.pen{position:absolute;right:-4px;top:-2px;width:25px;height:25px;border-radius:50%;
+  background:var(--ink);color:#fff;display:grid;place-items:center;font-size:11px}
+.hname{font-family:var(--disp);font-size:21px;font-weight:800;letter-spacing:-.045em;line-height:1.12}
+.hmeta{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.5;font-weight:500}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.tile{border-radius:22px;padding:16px 15px;box-shadow:var(--sh);background:var(--card)}
+.tile .v{font-family:var(--disp);font-size:23px;font-weight:800;letter-spacing:-.06em;
+  line-height:1;font-variant-numeric:tabular-nums}
+.tile .k{font-size:10.5px;font-weight:700;margin-top:7px;color:var(--muted)}
+.tile.pk{background:var(--pink)}.tile.yl{background:var(--yellow)}.tile.mn{background:var(--mint)}
+.tile.sl{background:var(--slate)}
+.tile.sl .v{color:#fff}.tile.sl .k{color:rgba(255,255,255,.7)}
+.tile.pk .k,.tile.yl .k,.tile.mn .k{color:rgba(35,39,52,.55)}
+.rowset{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:15px 17px;background:none}
+.rowset+.rowset{border-top:1px solid var(--line)}
+.rowset:active{background:var(--wash)}
+.rowset .k{flex:1;font-size:14.5px;font-weight:600}
+.rowset .v{font-size:14.5px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}
+.rowset .go{color:var(--muted-2);font-size:17px}
+.sect{font-size:11px;color:var(--muted-2);letter-spacing:.08em;text-transform:uppercase;
+  font-weight:800;margin:22px 8px 10px}
+.prrow{display:flex;align-items:center;gap:12px;padding:13px 17px}
+.prrow+.prrow{border-top:1px solid var(--line)}
+.prrow .rk{font-family:var(--disp);font-size:13px;font-weight:800;color:var(--muted-2);width:18px}
+.prrow .nm{flex:1;font-size:14px;font-weight:600;line-height:1.25;min-width:0}
+.prrow .kg{font-family:var(--disp);font-size:17px;font-weight:800;letter-spacing:-.05em;
+  font-variant-numeric:tabular-nums}
+.avpick{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:14px}
+.avpick button{width:54px;height:54px;border-radius:50%;font-size:26px;background:var(--card);
+  display:grid;place-items:center;box-shadow:var(--sh)}
+.avpick button.on{background:var(--mint)}
+
+/* ---------- autentificare ---------- */
+.auth{max-width:430px;margin:0 auto;padding:9vh 22px 44px;min-height:100vh}
+.logo{display:flex;gap:7px;margin-bottom:26px}
+.logo i{width:38px;height:14px;border-radius:99px;display:block}
+.auth h1{font-family:var(--disp);font-size:31px;font-weight:800;letter-spacing:-.05em;
+  line-height:1.1;margin:0 0 12px}
+.auth .sub{color:var(--muted);font-size:14.5px;line-height:1.6;margin:0 0 28px;font-weight:500}
+.field{margin-bottom:11px}
+.field label{display:block;font-size:11px;font-weight:800;color:var(--muted-2);margin:0 0 7px 18px}
+.field input{width:100%;padding:17px 19px;border-radius:999px;background:var(--card);
+  border:0;outline:none;font-weight:600;font-size:16px;box-shadow:var(--sh)}
+.field input:focus{box-shadow:var(--sh),0 0 0 2px var(--mint)}
+.swap{text-align:center;font-size:14px;color:var(--muted);padding:20px 0 0;font-weight:500}
+.swap button{color:var(--ink);font-weight:800}
+.msg{border-radius:20px;padding:14px 17px;font-size:13.5px;margin-bottom:14px;
+  line-height:1.5;font-weight:600}
+.msg.err{background:var(--pink-s);color:var(--pink-d)}
+.msg.ok{background:var(--mint-s);color:#2C4A3B}
+.setupwarn{max-width:520px;margin:0 auto;padding:9vh 22px}
+.setupwarn code{background:var(--card);border-radius:8px;padding:3px 8px;font-size:13px;
+  box-shadow:var(--sh)}
+
+/* ---------- clasament & provocări ---------- */
+.seg{display:flex;gap:4px;background:var(--card);border-radius:999px;padding:5px;
+  margin-bottom:16px;box-shadow:var(--sh)}
+.seg button{flex:1;padding:11px 6px;border-radius:999px;font-size:13.5px;font-weight:800;
+  color:var(--muted);letter-spacing:-.02em}
+.seg button.on{background:var(--go);color:var(--ink)}
+.lbrow{display:flex;align-items:center;gap:13px;padding:13px 16px;background:var(--card);
+  border-radius:22px;margin-bottom:8px;box-shadow:var(--sh)}
+.lbrow.me{background:var(--mint-s)}
+.lbrow .rk{font-family:var(--disp);font-size:15px;font-weight:800;color:var(--muted-2);
+  width:22px;text-align:center;flex:none}
+.lbrow .rk.top{color:var(--ink)}
+.lbav{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;
+  font-size:21px;background:var(--yellow-s);overflow:hidden}
+.lbav img{width:100%;height:100%;object-fit:cover}
+.lbrow .nm{flex:1;min-width:0;font-size:14.5px;font-weight:700;letter-spacing:-.02em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lbrow .sub{font-size:11.5px;color:var(--muted);font-weight:500;margin-top:2px}
+.lbrow .val{font-family:var(--disp);font-size:20px;font-weight:800;letter-spacing:-.05em;
+  font-variant-numeric:tabular-nums;flex:none}
+.chcard{padding:18px 18px 16px}
+.chtop{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px}
+.chtop h3{margin:0;font-family:var(--disp);font-size:18px;font-weight:800;letter-spacing:-.04em;flex:1}
+.chtop .m{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:4px}
+.codepill{background:var(--yellow);border-radius:999px;padding:7px 13px;font-size:12px;
+  font-weight:800;letter-spacing:.06em;flex:none}
+.mrow{margin-bottom:13px}
+.mrow .l{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.mrow .l .nm{flex:1;font-size:13.5px;font-weight:700;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.mrow .l .v{font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted)}
+.mrow .l .v.done{color:#3B6353}
+.pbar{height:9px;border-radius:999px;background:var(--wash);overflow:hidden}
+.pbar i{display:block;height:100%;border-radius:999px;background:var(--go);min-width:9px}
+.pbar.done i{background:var(--mint)}
+.mini{width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;
+  font-size:14px;background:var(--yellow-s);overflow:hidden}
+.mini img{width:100%;height:100%;object-fit:cover}
+.sw{width:50px;height:30px;border-radius:999px;background:var(--wash);flex:none;
+  position:relative;transition:background .18s}
+.sw.on{background:var(--mint)}
+.sw i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
+  background:#fff;box-shadow:var(--sh);transition:left .18s}
+.sw.on i{left:23px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+:focus-visible{outline:2.5px solid var(--mint);outline-offset:3px}
+</style>
+
+<div id="root"></div>
+
+<div class="dock" id="dock" hidden>
+  <div class="wrap" id="dockextra"></div>
+  <nav>
+    <button data-tab="log" class="on" aria-label="Azi"><svg viewBox="0 0 24 24"><path d="M4 9v6M20 9v6M7 6v12M17 6v12M7 12h10"/></svg><span>Azi</span></button>
+    <button data-tab="hist" aria-label="Istoric"><svg viewBox="0 0 24 24"><path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/></svg><span>Istoric</span></button>
+    <button data-tab="prog" aria-label="Progres"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 15l4-5 3 3 5-7"/></svg><span>Progres</span></button>
+    <button data-tab="lib" aria-label="Exerciții"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM9 4v16M13 8h3M13 12h3"/></svg><span>Exerciții</span></button>
+    <button data-tab="grup" aria-label="Grup"><svg viewBox="0 0 24 24"><path d="M8 21V9h8v12M5 21h14M12 3l1.6 3.3 3.4.5-2.5 2.4.6 3.4-3.1-1.7-3.1 1.7.6-3.4L7 6.8l3.4-.5z"/></svg><span>Grup</span></button>
+    <button data-tab="me" aria-label="Profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.6 20a7.6 7.6 0 0 1 14.8 0"/></svg><span>Profil</span></button>
+  </nav></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   1. CONFIGURARE — înlocuiește cele două valori cu ale proiectului tău
+      Supabase (Project Settings → API). Vezi README.md.
+   ═══════════════════════════════════════════════════════════════════════ */
+const SUPABASE_URL      = "https://qwqcfwbyfnjwsfcsyice.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3cWNmd2J5Zm5qd3NmY3N5aWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNDIzMjIsImV4cCI6MjEwMjYxODMyMn0.p4tNcdKnS7IcK6ejoWy7htqpenyZ8QougawMKM0F7Nk";
+
+/* ═══════════════════════════════════════════════════════════════════════
+   2. Citate — unul pe zi, se schimbă singur la miezul nopții
+   ═══════════════════════════════════════════════════════════════════════ */
+const QUOTES = [
+"Nu trebuie să fie ușor. Trebuie doar să înceapă.",
+"Corpul ține minte fiecare zi în care ai venit.",
+"Progresul se face în kilograme mici și zile multe.",
+"Cea mai grea greutate e ușa de la intrare.",
+"Azi nu concurezi cu nimeni. Doar cu rândul de ieri.",
+"O serie făcută prost e tot mai bună decât una nefăcută.",
+"Puterea nu vine din ce poți deja, ci din ce nu puteai luna trecută.",
+"Nu aștepta motivația. Ea apare după prima serie.",
+"Discul mic pus azi devine discul mare de la anul.",
+"Ai voie să fii obosită. Nu ai voie să te crezi slabă.",
+"Repetarea a zecea e cea care schimbă ceva.",
+"Antrenamentul scurt bate antrenamentul imaginar.",
+"Nu numeri zilele. Faci zilele să conteze.",
+"Mușchii cresc noaptea, dar decizia se ia dimineața.",
+"Fiecare kilogram în plus a fost cândva imposibil.",
+"Consecvența e cel mai bun supliment.",
+"Ridici greutăți ca să duci mai ușor restul vieții.",
+"Nu cea mai puternică. Doar mai puternică decât acum trei luni.",
+"Pauza dintre serii e parte din antrenament, nu o vină.",
+"Ce nu măsori, uiți. Ce scrii, crește.",
+"Corpul se plânge primul. Nu el conduce.",
+"Și un antrenament prost te ține în ritm.",
+"Tehnica bună azi înseamnă articulații întregi la 60 de ani.",
+"Începe cu greutatea pe care o controlezi. Restul vine.",
+"Cine ridică regulat nu are zile proaste, are zile ușoare.",
+"Nu e vanitate. E întreținere.",
+"Rezultatele apar exact când te-ai plictisit de proces.",
+"Fă azi seria pe care mâine ai vrea s-o fi făcut.",
+"Nu-ți trebuie chef. Îți trebuie pantofi.",
+"Frica de greutate dispare după ce o ridici o dată.",
+"Ești la un antrenament distanță de o zi mai bună.",
+"Creșterile mici sunt singurele care rămân.",
+"Antrenează-te ca și cum ai nevoie de corpul ăsta încă 50 de ani. Ai.",
+"Nu compara începutul tău cu mijlocul altcuiva.",
+"Cel mai bun program e cel pe care chiar îl faci.",
+"Recordul de azi a fost încălzirea de peste un an.",
+"Respiră. Împinge. Numără. Repetă.",
+"Disciplina e să ții planul și în zilele fără chef.",
+"Corpul urmează. Mintea trebuie convinsă prima.",
+"Nu ai timp? Fă jumătate. Jumătate e infinit mai mult decât zero.",
+"Fiecare serie e un vot pentru cine vrei să devii.",
+"Greutatea nu știe cum te simți. Știe doar dacă o ridici.",
+"Ce pare greu acum va fi încălzire cândva.",
+"Te antrenezi pentru scări, bagaje și copii în brațe.",
+"Ziua în care nu vrei e ziua care contează dublu.",
+"Odihna e antrenament, dacă e planificată.",
+"Nu perfecțiune. Prezență.",
+"Tabelul nu te judecă. Doar arată.",
+"Ai mai făcut asta. Poți din nou.",
+"Mai una. Aproape mereu mai e una.",
+"Mușchiul nu întreabă câți ani ai.",
+"Fii mândră că ai venit, nu doar de cât ai ridicat.",
+"Progresul lent e tot progres. Zero nu e.",
+"Ora asta nu o datorezi nimănui. E a ta.",
+"Ridică ce poți controla, controlează ce poți ridica.",
+"Ce faci constant devine ușor. Ce eviți devine greu.",
+"Nu-ți lipsește puterea. Îți lipsesc repetările.",
+"Corpul tău e singurul loc în care trebuie să locuiești.",
+"Vino, chiar și numai pentru trei exerciții.",
+"Peste un an o să-ți pară bine că ai început azi.",
+"Nu contează numărul de pe disc, ci numărul de zile la rând.",
+"Serie cu serie se face un an.",
+"Ieri ai ridicat mai puțin. Asta e toată ideea.",
+"Începe încet. Termină oricum."
+];
+function dayNo(){ const d=new Date(); return Math.floor((d-new Date(d.getFullYear(),0,0))/864e5)+d.getFullYear()*366; }
+function quoteToday(){ return QUOTES[dayNo()%QUOTES.length]; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   3. Exerciții de pornire (din Tabel_exercitii_sala.xlsx)
+   ═══════════════════════════════════════════════════════════════════════ */
+const SEED = [
+["Aparat ridicare pulpă","Picioare","leg extension",[[20,[15]],[30,[12]],[35,[10]],[40,[10]]]],
+["Aparat îndoit picioare în spate (ambele)","Picioare","seated leg curl",[[12.5,[10]],[17.5,[7,7,7]]]],
+["Aparat îndoit picioare în spate","Picioare","lying leg curl",[[7.5,[7]]]],
+["Aparat îndoit picioare 2.0","Picioare","seated leg curl machine",[[20,[12]],[25,[11,10,10]]]],
+["Presă nebună","Picioare","leg press",[[20,[11]],[40,[8,8,8]]]],
+["Presă chill","Picioare","leg press form",[[20,[15]],[27.5,[13,14,14]],[35,[10]]]],
+["Hip abductor - interior","Fund & șolduri","hip adduction machine",[[40,[14]],[50,[12]],[55,[14]]]],
+["Hip abductor - exterior","Fund & șolduri","hip abduction machine",[[35,[15]],[40,[12,12,12]]]],
+["Aparat interior picioare","Picioare","hip adduction machine",[[15,[14]],[20,[10]],[25,[6,4]]]],
+["RDLs","Fund & șolduri","romanian deadlift",[[10,[11]],[15,[8,9,7]]]],
+["Genuflexiuni cu greutate","Picioare","goblet squat",[[0,[11]],[12,[10]],[18,[9,10,9]]]],
+["Bulgarian split","Picioare","bulgarian split squat",[[0,[10]],[8,[8,8]]]],
+["Sumo squads","Picioare","sumo squat",[[14,[11,10]]]],
+["Glezne","Picioare","standing calf raise",[[10,[14]],[15,[10,10]]]],
+["Ridicare deasupra capului","Umeri","dumbbell shoulder press",[[6,[13]],[8,[10,10,8]]]],
+["Exercitiu umeri cand tragi de maine in sus","Umeri","upright row",[[7.5,[12,12,10,11]]]],
+["Aparat cu fluturări","Piept","pec deck fly machine",[[17.5,[12]],[22.5,[10,11,10,10]]]],
+["Pull lats","Spate","lat pulldown",[[20,[13]],[30,[11,12]],[35,[6,6]]]],
+["Aparat tras de lângă lat pulldowns","Spate","seated cable row",[[25,[10,7,7,7]]]],
+["Aparat lat pulldowns cu tot corpul","Spate","lat pulldown machine",[[63,[9,8,8,8]]]],
+["Triceps aparat","Brațe","triceps pushdown machine",[[5,[14]],[7,[5,7]]]],
+["Triceps aparat coarda","Brațe","rope triceps pushdown",[[12.5,[12]],[17.5,[7,7,6]]]],
+["Triceps cu greutate","Brațe","overhead triceps extension",[[10,[10]]]],
+["Triceps individual","Brațe","single arm triceps pushdown",[[4,[6,10,6,10]]]],
+["Biceps","Brațe","biceps curl",[[7.5,[10]],[10,[10]]]],
+["Biceps greutate","Brațe","dumbbell biceps curl",[[6,[14]]]]
+];
+const GROUPS=["Picioare","Fund & șolduri","Spate","Umeri","Piept","Brațe","Altele"];
+const AVATARS=["🏋️","💪","🌸","🔥","🦋","🍋","✨","🎯","🌊","🍉","🐇","🌍"];
+
+/* ═══════════════════════════════════════════════════════════════════════
+   4. Stare + sincronizare cu Supabase
+   ═══════════════════════════════════════════════════════════════════════ */
+let sb=null, me=null, S=null;
+let tab="log", sel=null, toastT=null, authMode="in", authBusy=false, authMsg=null;
+let rest={left:0,on:false}, restT=null, profT=null;
+let Q=[];   /* scrieri eșuate, se reîncearcă */
+let LB=null, CH=null, CHP=null, LBper="week", gsub="lb";
+
+const uid=()=> (crypto.randomUUID?crypto.randomUUID():"x"+Math.random().toString(36).slice(2)+Date.now().toString(36));
+const today=()=>{ const d=new Date(); return new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10); };
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+const fmt=n=>{ if(n==null)return "0"; return (Math.round(n*100)/100).toString().replace(".",","); };
+const numRO=v=>{ const x=parseFloat(String(v).replace(",",".")); return isNaN(x)?null:x; };
+
+function blank(){ return {me:{name:"",avatar:{t:"e",v:"🏋️"},goal:3,rest:90,visible:true}, ex:[], sessions:[], body:[], active:null, progEx:null}; }
+
+async function run(fn){                      /* scriere cu reîncercare */
+  try{ const r=await fn(); if(r&&r.error) throw r.error; }
+  catch(e){ Q.push(fn); renderDock(); }
+}
+setInterval(async()=>{
+  if(!Q.length||!me) return;
+  const f=Q[0];
+  try{ const r=await f(); if(r&&r.error) throw r.error; Q.shift(); renderDock(); }catch(e){}
+},6000);
+addEventListener("beforeunload",e=>{ if(Q.length){ e.preventDefault(); e.returnValue=""; } });
+
+function pushProfile(){
+  clearTimeout(profT);
+  profT=setTimeout(()=>{
+    const p={id:me.id, name:S.me.name, avatar:S.me.avatar, born:S.me.born||null,
+      height_cm:S.me.height||null, gym:S.me.gym||null, goal:S.me.goal||3, visible:S.me.visible!==false,
+      target_kg:S.me.target||null, rest_sec:S.me.rest||90, active:S.active, prog_ex:S.progEx};
+    run(()=>sb.from("profiles").upsert(p));
+  },400);
+}
+function pushEx(e){
+  const row={id:e.id,user_id:me.id,name:e.name,muscle_group:e.group,search:e.search||null,ref:e.ref||[]};
+  run(()=>sb.from("exercises").upsert(row));
+}
+function pushSession(s){
+  const row={id:s.id,user_id:me.id,date:s.date,minutes:s.min||null,items:s.items};
+  run(()=>sb.from("sessions").upsert(row));
+}
+function pushBody(b){ run(()=>sb.from("body_log").upsert({id:b.id,user_id:me.id,date:b.date,kg:b.kg})); }
+
+async function loadAll(){
+  S=blank();
+  const [p,ex,ss,bd]=await Promise.all([
+    sb.from("profiles").select("*").eq("id",me.id).maybeSingle(),
+    sb.from("exercises").select("*").order("created_at"),
+    sb.from("sessions").select("*").order("date"),
+    sb.from("body_log").select("*").order("date")
+  ]);
+  if(p.data){
+    S.me={name:p.data.name||"", avatar:p.data.avatar||{t:"e",v:"🏋️"}, born:p.data.born,
+      height:p.data.height_cm, gym:p.data.gym, goal:p.data.goal||3,
+      target:p.data.target_kg, rest:p.data.rest_sec||90, visible:p.data.visible!==false};
+    S.active=p.data.active||null; S.progEx=p.data.prog_ex||null;
+  }else{
+    S.me.name=(me.user_metadata&&me.user_metadata.name)||me.email.split("@")[0];
+    pushProfile();
+  }
+  S.ex=(ex.data||[]).map(r=>({id:r.id,name:r.name,group:r.muscle_group||"Altele",search:r.search||"",ref:r.ref||[]}));
+  S.sessions=(ss.data||[]).map(r=>({id:r.id,date:r.date,min:r.minutes,items:r.items||[]}));
+  S.body=(bd.data||[]).map(r=>({id:r.id,date:r.date,kg:Number(r.kg)}));
+  if(!S.ex.length){
+    S.ex=SEED.map(([name,group,search,steps])=>({id:uid(),name,group,search,ref:steps.map(([kg,reps])=>({kg,reps}))}));
+    await run(()=>sb.from("exercises").insert(S.ex.map(e=>({id:e.id,user_id:me.id,name:e.name,muscle_group:e.group,search:e.search,ref:e.ref}))));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   5. Ajutătoare
+   ═══════════════════════════════════════════════════════════════════════ */
+function band(kg){ if(kg<10)return 0; if(kg<25)return 1; if(kg<40)return 2; if(kg<60)return 3; return 4; }
+function exOf(id){ return S.ex.find(e=>e.id===id); }
+function nameOf(it){ const e=exOf(it.exId); return e?e.name:"Exercițiu șters"; }
+function dateRO(d){
+  const x=new Date(d+"T12:00:00"), t=new Date(today()+"T12:00:00");
+  const diff=Math.round((t-x)/864e5);
+  if(diff===0) return "Azi"; if(diff===1) return "Ieri";
+  return x.toLocaleDateString("ro-RO",{weekday:"short",day:"numeric",month:"long"});
+}
+function stepsText(steps){ return steps.filter(s=>s.reps.length).map(s=>fmt(s.kg)+" kg × "+s.reps.join(", ")).join("  ·  "); }
+function best(exId,skip){
+  let b=0;
+  for(const s of S.sessions){ if(skip&&s.id===skip) continue;
+    for(const it of s.items){ if(it.exId!==exId) continue;
+      for(const st of it.steps) if(st.reps.length&&st.kg>b) b=st.kg; } }
+  const e=exOf(exId);
+  if(!b&&e&&e.ref) for(const st of e.ref) if(st.kg>b) b=st.kg;
+  return b;
+}
+function lastDone(exId){
+  for(let i=S.sessions.length-1;i>=0;i--){
+    const it=S.sessions[i].items.find(x=>x.exId===exId&&x.steps.some(s=>s.reps.length));
+    if(it) return {date:S.sessions[i].date,steps:it.steps};
+  }
+  const e=exOf(exId);
+  return e&&e.ref&&e.ref.length?{date:null,steps:e.ref}:null;
+}
+function weekStart(d){ const x=new Date(d+"T12:00:00"); x.setDate(x.getDate()-((x.getDay()+6)%7));
+  return new Date(x.getTime()-x.getTimezoneOffset()*6e4).toISOString().slice(0,10); }
+function thisWeek(){ const w=weekStart(today()); return S.sessions.filter(s=>weekStart(s.date)===w).length; }
+function streakWeeks(){
+  const set=new Set(S.sessions.map(s=>weekStart(s.date)));
+  let n=0, c=new Date(weekStart(today())+"T12:00:00");
+  const key=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+  if(!set.has(key(c))) c.setDate(c.getDate()-7);
+  while(set.has(key(c))){ n++; c.setDate(c.getDate()-7); }
+  return n;
+}
+function volume(list){ return (list||S.sessions).reduce((t,s)=>t+s.items.reduce((a,i)=>
+  a+i.steps.reduce((b,x)=>b+x.reps.reduce((c,r)=>c+r*x.kg,0),0),0),0); }
+function prList(){
+  const m={};
+  S.sessions.forEach(s=>s.items.forEach(it=>it.steps.forEach(st=>{
+    if(st.reps.length&&st.kg>(m[it.exId]||0)) m[it.exId]=st.kg; })));
+  return Object.keys(m).map(id=>({id,kg:m[id],name:(exOf(id)||{}).name||"—"})).sort((a,b)=>b.kg-a.kg);
+}
+function age(){ if(!S.me.born) return null; const b=new Date(S.me.born+"T12:00:00"), n=new Date();
+  let a=n.getFullYear()-b.getFullYear(); const m=n.getMonth()-b.getMonth();
+  if(m<0||(m===0&&n.getDate()<b.getDate())) a--; return a; }
+function toast(m){
+  document.querySelectorAll(".toast").forEach(t=>t.remove());
+  const d=document.createElement("div"); d.className="toast"; d.textContent=m;
+  document.body.appendChild(d); clearTimeout(toastT); toastT=setTimeout(()=>d.remove(),2400);
+}
+function buzz(p){ try{ navigator.vibrate&&navigator.vibrate(p); }catch(e){} }
+
+/* pauză */
+function startRest(){
+  rest={left:S.me.rest||90,on:true}; clearInterval(restT);
+  restT=setInterval(()=>{ rest.left--;
+    if(rest.left<=0){ rest.left=0; clearInterval(restT); buzz([90,70,90]); beep(); }
+    renderDock(); },1000);
+  renderDock();
+}
+function stopRest(){ clearInterval(restT); rest.on=false; renderDock(); }
+function beep(){ try{
+  const C=window.AudioContext||window.webkitAudioContext; if(!C) return;
+  const c=new C(), o=c.createOscillator(), g=c.createGain();
+  o.connect(g); g.connect(c.destination); o.frequency.value=760;
+  g.gain.setValueAtTime(.001,c.currentTime);
+  g.gain.exponentialRampToValueAtTime(.22,c.currentTime+.03);
+  g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.5);
+  o.start(); o.stop(c.currentTime+.52);
+}catch(e){} }
+const mmss=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+
+/* ═══════════════════════════════════════════════════════════════════════
+   6. Ecranul de autentificare
+   ═══════════════════════════════════════════════════════════════════════ */
+function viewAuth(){
+  const R=document.getElementById("root");
+  document.getElementById("dock").hidden=true;
+  document.body.style.paddingBottom="0";
+  R.innerHTML=`<div class="auth">
+    <div class="logo">
+      <i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i>
+      <i style="background:var(--mint)"></i><i style="background:var(--slate)"></i>
+    </div>
+    <h1>${authMode==="in"?"Bine ai <span class=\"mark-hl\">revenit</span>":"Hai să <span class=\"mark-hl\">începem</span>"}</h1>
+    <p class="sub">${authMode==="in"
+      ? "Intră în cont ca să-ți vezi antrenamentele pe orice telefon sau laptop."
+      : "Îți fac un cont. Datele rămân doar ale tale și te urmează pe orice dispozitiv."}</p>
+    ${authMsg?`<div class="msg ${authMsg.k}">${esc(authMsg.t)}</div>`:""}
+    ${authMode==="up"?`<div class="field"><label>Nume</label>
+      <input id="a-name" autocomplete="name" placeholder="Cum îți spun?"></div>`:""}
+    <div class="field"><label>Email</label>
+      <input id="a-mail" type="email" inputmode="email" autocomplete="email" placeholder="nume@email.com"></div>
+    <div class="field"><label>Parolă</label>
+      <input id="a-pass" type="password" autocomplete="${authMode==="in"?"current-password":"new-password"}" placeholder="minim 6 caractere"></div>
+    <div style="height:10px"></div>
+    <button class="btn" data-act="${authMode==="in"?"signin":"signup"}" ${authBusy?"disabled":""}>
+      ${authBusy?"Un moment…":(authMode==="in"?"Intră în cont":"Creează contul")}</button>
+    <div class="swap">${authMode==="in"?"N-ai cont încă?":"Ai deja cont?"}
+      <button data-act="swapauth">${authMode==="in"?"Fă-ți unul":"Intră"}</button></div>
+    ${authMode==="in"?`<div class="hint" style="padding-top:14px">
+      <button data-act="reset" style="color:var(--muted);text-decoration:underline">Mi-am uitat parola</button></div>`:""}
+  </div>`;
+}
+function viewSetup(){
+  document.getElementById("dock").hidden=true;
+  document.getElementById("root").innerHTML=`<div class="setupwarn">
+    <h1 style="font-family:var(--disp);font-size:24px;letter-spacing:-.05em;margin:0 0 12px">Mai lipsesc două chei</h1>
+    <p style="color:var(--muted);line-height:1.6">Deschide <code>index.html</code> și înlocuiește
+    <code>SUPABASE_URL</code> și <code>SUPABASE_ANON_KEY</code> cu valorile din proiectul tău Supabase
+    (butonul <b>Connect</b> din bara de sus, sau Settings → Data API și Settings → API Keys). Pașii compleți sunt în <code>README.md</code>.</p></div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   7. Aplicația
+   ═══════════════════════════════════════════════════════════════════════ */
+function render(){
+  if(!me){ viewAuth(); return; }
+  const R=document.getElementById("root");
+  document.getElementById("dock").hidden=false;
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
+  const T={log:["Azi",S.active?dateRO(S.active.date):""],
+           hist:["Istoric",S.sessions.length+" sesiuni"],
+           prog:["Progres",""], lib:["Exerciții",S.ex.length+" în listă"],
+           grup:["Grup",""], me:["Profil",""]}[tab];
+  R.innerHTML=`<header><div class="wrap hrow">
+      <div class="htitle">${T[0]}</div><div class="hsub">${esc(T[1])}</div></div></header>
+    <main class="wrap">${
+      tab==="log"?viewLog():tab==="hist"?viewHist():tab==="prog"?viewProg():
+      tab==="lib"?viewLib():tab==="grup"?viewGroup():viewMe()}</main>`;
+  renderDock();
+}
+function renderDock(){
+  const D=document.getElementById("dockextra"); if(!D||!me) return;
+  let h="";
+  if(Q.length) h+=`<div class="pending">⟳ ${Q.length} ${Q.length===1?"modificare nesalvată":"modificări nesalvate"} — reîncerc…</div>`;
+  if(rest.on){ const done=rest.left<=0;
+    h+=`<div class="rest ${done?"done":""}"><div class="t">${done?"Gata":mmss(rest.left)}</div>
+      <div class="lbl">${done?"Următoarea serie":"Pauză"}</div>
+      <button data-act="rest+">+30s</button><button data-act="restoff">Închide</button></div>`; }
+  if(tab==="log"){
+    h+= S.active
+      ? `<div class="dockmain"><button class="btn ghost" data-act="addex">+ Exercițiu</button>
+         <button class="btn" data-act="finish">Termină</button></div>`
+      : `<div class="dockmain"><button class="btn" data-act="start">Începe antrenamentul</button></div>`;
+  }
+  D.innerHTML=h;
+  requestAnimationFrame(()=>{ const d=document.getElementById("dock");
+    if(d) document.body.style.paddingBottom=(d.offsetHeight+18)+"px"; });
+}
+
+/* ---- AZI ---- */
+function viewLog(){
+  const q=`<div class="quote c${dayNo()%3}"><div class="mark">”</div>
+    <div class="q">${esc(quoteToday())}</div>
+    <div class="day">${new Date().toLocaleDateString("ro-RO",{weekday:"long",day:"numeric",month:"long"})}</div></div>`;
+  const a=S.active;
+  if(!a){
+    const l=S.sessions[S.sessions.length-1];
+    return q+`<div class="empty"><div class="big">Nimic în desfășurare</div>
+      <p>Pornește o sesiune și adaugă exercițiile pe rând.</p></div>`+
+      (l?`<div class="card"><div class="sess"><div class="d">Ultima oară · ${dateRO(l.date)}</div>
+        <div class="m">${l.items.length} exerciții · ${l.items.reduce((n,i)=>n+i.steps.reduce((m,s)=>m+s.reps.length,0),0)} serii</div></div>
+        ${l.items.map(i=>`<div class="line" style="margin:0 13px"><div class="n">${esc(nameOf(i))}</div>
+          <div class="v">${esc(stepsText(i.steps))||"—"}</div></div>`).join("")}</div>`:"");
+  }
+  if(!a.items.length) return q+`<div class="empty"><div class="big">Sesiune pornită</div>
+    <p>Adaugă primul exercițiu. Îți arăt ce ai făcut ultima dată.</p></div>`;
+  return q+a.items.map((it,i)=>cardEx(it,i)).join("");
+}
+function cardEx(it,ii){
+  const ld=lastDone(it.exId), b=best(it.exId), e=exOf(it.exId);
+  const l=ld?(ld.date?dateRO(ld.date)+" · ":"reper · ")+stepsText(ld.steps):"prima dată";
+  return `<div class="card"><div class="card-h">
+      ${gicon(e?e.group:"Altele")}
+      <div style="flex:1;min-width:0"><h3>${esc(e?e.name:"Exercițiu")}</h3><div class="last">${esc(l)}</div></div>
+      <button class="kebab tutbtn" data-act="tut" data-id="${it.exId}" aria-label="Cum se face">
+        <svg viewBox="0 0 24 24"><path d="M9.5 8.2v7.6l6.2-3.8z"/><circle cx="12" cy="12" r="9.2"/></svg></button>
+      <button class="kebab" data-act="exmenu" data-i="${ii}" aria-label="Opțiuni">⋯</button></div>
+    ${it.steps.map((st,si)=>rowStep(ii,si,st,b)).join("")}
+    <button class="addstep" data-act="addstep" data-i="${ii}">+ Treaptă de greutate</button></div>`;
+}
+function rowStep(ii,si,st,b){
+  const rec=st.reps.length>0&&st.kg>b&&st.kg>0;
+  const act=sel&&sel.i===ii&&sel.s===si;
+  return `<div class="step"><div class="rail p${band(st.kg)}"></div><div class="stepbody">
+    <div class="wt">
+      <button class="rnd" data-act="kg-" data-i="${ii}" data-s="${si}" aria-label="Mai puțin">−</button>
+      <button class="wtnum" data-act="kgset" data-i="${ii}" data-s="${si}">${fmt(st.kg)}</button>
+      <span class="unit">kg</span>
+      <button class="rnd" data-act="kg+" data-i="${ii}" data-s="${si}" aria-label="Mai mult">+</button>
+      ${rec?'<span class="recbadge" style="margin-left:auto">★ record</span>':""}
+    </div>
+    <div class="chips">
+      ${st.reps.map((r,ri)=>`<button class="chip ${act&&sel.r===ri?"on":""} ${rec?"rec":""}"
+        data-act="pick" data-i="${ii}" data-s="${si}" data-r="${ri}">${r}</button>`).join("")}
+      <button class="chip add" data-act="addset" data-i="${ii}" data-s="${si}" aria-label="Serie nouă">+</button>
+    </div>
+    ${act&&sel.r!=null?`<div class="editbar">
+      <button class="rnd" data-act="rep-" aria-label="Minus">−</button>
+      <div class="lbl">${st.reps[sel.r]} repetări</div>
+      <button class="rnd" data-act="rep+" aria-label="Plus">+</button>
+      <button class="del" data-act="repdel" aria-label="Șterge seria">✕</button></div>`:""}
+  </div></div>`;
+}
+
+/* ---- ISTORIC ---- */
+function viewHist(){
+  if(!S.sessions.length) return `<div class="empty"><div class="big">Încă nimic salvat</div>
+    <p>Sesiunile terminate apar aici, cele mai noi primele.</p></div>`;
+  return [...S.sessions].reverse().map(s=>`<div class="card">
+    <div class="sess" style="display:flex;gap:8px"><div style="flex:1">
+      <div class="d">${dateRO(s.date)}</div>
+      <div class="m">${s.items.length} exerciții · ${s.items.reduce((n,i)=>n+i.steps.reduce((m,x)=>m+x.reps.length,0),0)} serii${s.min?" · "+s.min+" min":""}</div>
+    </div><button class="kebab" data-act="sessmenu" data-id="${s.id}" aria-label="Opțiuni">⋯</button></div>
+    ${s.items.map(i=>`<div class="line" style="margin:0 13px"><div class="n">${esc(nameOf(i))}</div>
+      <div class="v">${esc(stepsText(i.steps))||"—"}</div></div>`).join("")}</div>`).join("");
+}
+
+/* ---- PROGRES ---- */
+function viewProg(){
+  const v=volume();
+  const head=weekCard()+`<div class="stats">
+    <div class="stat"><div class="v">${S.sessions.length}</div><div class="k">Sesiuni</div></div>
+    <div class="stat"><div class="v">${thisWeek()}</div><div class="k">Săptămâna asta</div></div>
+    <div class="stat"><div class="v">${v>=1000?Math.round(v/1000)+"t":Math.round(v)}</div><div class="k">Volum total</div></div></div>`;
+  const used=S.ex.filter(e=>S.sessions.some(s=>s.items.some(i=>i.exId===e.id&&i.steps.some(x=>x.reps.length))));
+  if(!used.length) return head+`<div class="empty"><div class="big">Graficele apar după prima sesiune</div>
+    <p>Salvează un antrenament și vezi aici cum urcă greutatea.</p></div>`;
+  const pick=S.progEx&&used.some(e=>e.id===S.progEx)?S.progEx:used[used.length-1].id;
+  return head+`<button class="pick" data-act="pickprog" style="margin-bottom:12px">
+    <div style="flex:1;min-width:0"><div class="nm">${esc(exOf(pick).name)}</div>
+    <div class="mt">Record: ${fmt(best(pick))} kg</div></div><span class="go">▾</span></button>
+    <div class="card chart">${chartEx(pick)}</div>`;
+}
+function line(pts,stroke,fill){
+  const W=300,H=110,P=6;
+  const vs=pts.map(p=>p.v), mn=Math.min(...vs), mx=Math.max(...vs), sp=(mx-mn)||1;
+  const X=i=>P+i*(W-2*P)/(pts.length-1), Y=v=>H-P-((v-mn)/sp)*(H-2*P);
+  const d=pts.map((p,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(p.v).toFixed(1)).join(" ");
+  return {mn,mx,svg:`<svg class="ch" viewBox="0 0 ${W} ${H+8}" preserveAspectRatio="none" role="img" aria-label="Grafic">
+    <defs><linearGradient id="g${stroke.slice(1)}" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="${fill}" stop-opacity=".55"/>
+      <stop offset="1" stop-color="${fill}" stop-opacity="0"/></linearGradient></defs>
+    <path d="${d} L ${X(pts.length-1).toFixed(1)} ${H} L ${P} ${H} Z" fill="url(#g${stroke.slice(1)})"/>
+    <path d="${d}" fill="none" stroke="${stroke}" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    ${pts.map((p,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="2.6"
+      fill="${p.v>=mx?"#B4587C":stroke}"/>`).join("")}</svg>`};
+}
+function chartEx(exId){
+  const pts=[];
+  S.sessions.forEach(s=>{ const it=s.items.find(i=>i.exId===exId&&i.steps.some(x=>x.reps.length));
+    if(it) pts.push({d:s.date,v:Math.max(...it.steps.filter(x=>x.reps.length).map(x=>x.kg))}); });
+  if(pts.length<2) return `<div class="hint" style="padding:26px 10px">Un singur punct deocamdată — linia apare după a doua sesiune.</div>`;
+  const c=line(pts,"#536583","#E79DC3");
+  return c.svg+`<div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);padding:8px 2px 4px">
+    <span>${fmt(c.mn)} kg · ${new Date(pts[0].d+"T12:00:00").toLocaleDateString("ro-RO",{day:"numeric",month:"short"})}</span>
+    <span style="color:var(--pink-d);font-weight:700">${fmt(c.mx)} kg maxim</span></div>`;
+}
+
+/* ---- EXERCIȚII ---- */
+function viewLib(){
+  let out="";
+  GROUPS.forEach(g=>{
+    const l=S.ex.filter(e=>e.group===g); if(!l.length) return;
+    out+=`<div class="grouplbl">${g}</div>`;
+    l.forEach(e=>{ const ld=lastDone(e.id);
+      out+=`<div class="pick" style="padding-right:9px">${gicon(e.group)}
+        <button data-act="exinfo" data-id="${e.id}" style="flex:1;min-width:0;text-align:left;padding:0">
+          <div class="nm">${esc(e.name)}</div>
+          <div class="mt">${ld?esc(stepsText(ld.steps).slice(0,52)):"—"}</div></button>
+        <button class="kebab tutbtn" data-act="tut" data-id="${e.id}" aria-label="Cum se face">
+          <svg viewBox="0 0 24 24"><path d="M9.5 8.2v7.6l6.2-3.8z"/><circle cx="12" cy="12" r="9.2"/></svg></button></div>`; });
+  });
+  return out+`<div style="height:12px"></div><button class="btn quiet" data-act="newex">+ Exercițiu nou</button>`;
+}
+
+/* ---- PROFIL ---- */
+const GICON={
+"Picioare":'<path d="M8 3v7l-2 11M16 3v7l2 11M8 10h8"/>',
+"Fund & șolduri":'<circle cx="12" cy="9" r="5"/><path d="M5 20c1.6-3 4-4.6 7-4.6s5.4 1.6 7 4.6"/>',
+"Spate":'<path d="M12 3v18M6 6l6 5 6-5M6 14l6 5 6-5"/>',
+"Umeri":'<path d="M4 17a8 8 0 0 1 16 0"/><circle cx="4" cy="19" r="2"/><circle cx="20" cy="19" r="2"/>',
+"Piept":'<path d="M3 8.4c2.8-3 5.8-1 9 2 3.2-3 6.2-5 9-2 0 6-5 10.2-9 12.2C8 18.6 3 14.4 3 8.4z"/>',
+"Brațe":'<path d="M5 19l5-6 4 3 5-9"/><circle cx="19" cy="6.6" r="2"/>',
+"Altele":'<path d="M4 9v6M20 9v6M7 6v12M17 6v12M7 12h10"/>'};
+function gicon(g){ const i=GROUPS.indexOf(g);
+  return `<div class="gicon g${i<0?6:i}"><svg viewBox="0 0 24 24">${GICON[g]||GICON["Altele"]}</svg></div>`; }
+function weekCard(){
+  const ws=weekStart(today()), days=["L","Ma","Mi","J","V","S","D"], vals=[0,0,0,0,0,0,0];
+  S.sessions.forEach(s=>{ if(weekStart(s.date)!==ws) return;
+    vals[(new Date(s.date+"T12:00:00").getDay()+6)%7]+=volume([s]); });
+  const mx=Math.max.apply(null,vals.concat([1])), n=vals.filter(v=>v>0).length;
+  return `<div class="card week"><div class="top"><div>
+      <div class="n">${n}<small> / ${S.me.goal||3}</small></div>
+      <div class="lbl">antrenamente săptămâna asta</div></div></div>
+    <div class="bars">${vals.map((v,i)=>`<div class="${v?"on":""}">
+      <i style="height:${v?Math.max(10,Math.round(v/mx*54)):7}px"></i><b>${days[i]}</b></div>`).join("")}</div></div>`;
+}
+function heroAv(){
+  const g=S.me.goal||3, d=thisWeek(), pr=Math.min(1,g?d/g:0), C=2*Math.PI*35, a=S.me.avatar;
+  return `<button data-act="avatar" style="padding:0"><div class="avring">
+    <svg width="78" height="78" viewBox="0 0 78 78">
+      <circle cx="39" cy="39" r="35" fill="none" stroke="#F1F0F5" stroke-width="5"/>
+      <circle cx="39" cy="39" r="35" fill="none" stroke="#90C9AE" stroke-width="5" stroke-linecap="round"
+        stroke-dasharray="${(C*pr).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 39 39)"/></svg>
+    <div class="av">${a&&a.t==="i"?`<img src="${a.v}" alt="">`:`<span>${a?a.v:"🏋️"}</span>`}</div>
+    <span class="avpct">${d}/${g}</span><span class="pen">✎</span></div></button>`;
+}
+function ring(done,goal){
+  const p=Math.min(1,goal?done/goal:0), R=26, C=2*Math.PI*R;
+  return `<svg width="62" height="62" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="26" fill="none" stroke="#E1E4EC" stroke-width="7"/>
+    <circle cx="32" cy="32" r="26" fill="none" stroke="#90C9AE" stroke-width="7" stroke-linecap="round"
+      stroke-dasharray="${(C*p).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 32 32)"/>
+    <text x="32" y="38" text-anchor="middle" font-family="Gabarito,sans-serif" font-size="17"
+      font-weight="700" fill="#2C3648">${done}</text></svg>`;
+}
+function avHTML(a,pen){
+  const inner=a&&a.t==="i"?`<img src="${a.v}" alt="">`:`<span>${a?a.v:"🏋️"}</span>`;
+  return `<div class="av">${inner}${pen?'<span class="pen">✎</span>':""}</div>`;
+}
+function viewMe(){
+  const v=volume(), prs=prList(), bw=S.body[S.body.length-1];
+  return `<div class="card"><div class="hero">
+      ${heroAv()}
+      <div style="flex:1;min-width:0">
+        <div class="hname">${esc(S.me.name||"Fără nume")}</div>
+        <div class="hmeta">${esc(me.email)}${S.me.gym?" · "+esc(S.me.gym):""}${age()?" · "+age()+" ani":""}</div>
+      </div>
+    </div></div>
+    ${weekCard()}
+
+    <div class="grid2">
+      <div class="tile pk"><div class="v">${S.sessions.length}</div><div class="k">Antrenamente</div></div>
+      <div class="tile yl"><div class="v">${v>=1000?(v/1000).toFixed(1).replace(".",",")+" t":Math.round(v)+" kg"}</div><div class="k">Ridicat în total</div></div>
+      <div class="tile mn"><div class="v">${streakWeeks()}</div><div class="k">Săptămâni la rând</div></div>
+      <div class="tile sl"><div class="v">${prs.length}</div><div class="k">Recorduri</div></div>
+    </div>
+
+    <div class="sect">Datele mele</div>
+    <div class="card">
+      <button class="rowset" data-act="edit" data-f="name"><span class="k">Nume</span><span class="v">${esc(S.me.name||"—")}</span><span class="go">›</span></button>
+      <button class="rowset" data-act="edit" data-f="gym"><span class="k">Sala</span><span class="v">${esc(S.me.gym||"—")}</span><span class="go">›</span></button>
+      <button class="rowset" data-act="edit" data-f="born"><span class="k">Data nașterii</span><span class="v">${S.me.born?new Date(S.me.born+"T12:00:00").toLocaleDateString("ro-RO"):"—"}</span><span class="go">›</span></button>
+      <button class="rowset" data-act="edit" data-f="height"><span class="k">Înălțime</span><span class="v">${S.me.height?fmt(S.me.height)+" cm":"—"}</span><span class="go">›</span></button>
+      <button class="rowset" data-act="edit" data-f="target"><span class="k">Greutate țintă</span><span class="v">${S.me.target?fmt(S.me.target)+" kg":"—"}</span><span class="go">›</span></button>
+      <button class="rowset" data-act="edit" data-f="goal"><span class="k">Obiectiv săptămânal</span><span class="v">${S.me.goal||3} antrenamente</span><span class="go">›</span></button>
+    </div>
+
+    <div class="sect">Greutate corporală</div>
+    <div class="card">
+      ${S.body.length>1?`<div class="chart">${(()=>{const c=line(S.body.map(b=>({v:b.kg})),"#536583","#90C9AE");
+        return c.svg+`<div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);padding:8px 2px 0">
+          <span>${fmt(c.mn)} kg</span><span>${fmt(c.mx)} kg</span></div>`;})()}</div>`:""}
+      <button class="rowset" data-act="addbody"><span class="k">${bw?"Cântărire nouă":"Adaugă prima cântărire"}</span>
+        <span class="v">${bw?fmt(bw.kg)+" kg · "+dateRO(bw.date):""}</span><span class="go">+</span></button>
+      ${S.body.length?`<button class="rowset" data-act="delbody"><span class="k" style="color:var(--pink-d)">Șterge ultima cântărire</span></button>`:""}
+    </div>
+
+    ${prs.length?`<div class="sect">Recordurile mele</div><div class="card">
+      ${prs.slice(0,6).map((p,i)=>`<div class="prrow"><div class="rk">${i+1}</div>
+        <div class="nm">${esc(p.name)}</div><div class="kg">${fmt(p.kg)} kg</div></div>`).join("")}</div>`:""}
+
+    <div class="sect">Setări</div>
+    <div class="card">
+      <button class="rowset" data-act="lib"><span class="k">Exercițiile mele</span><span class="v">${S.ex.length}</span><span class="go">›</span></button>
+      <button class="rowset" data-act="edit" data-f="rest"><span class="k">Pauză între serii</span><span class="v">${S.me.rest||90} sec</span><span class="go">›</span></button>
+      <button class="rowset" data-act="visible"><span class="k">Apar în clasament</span>
+        <span class="sw ${S.me.visible===false?"":"on"}"><i></i></span></button>
+      <button class="rowset" data-act="export"><span class="k">Descarcă toate datele</span><span class="go">↓</span></button>
+      <button class="rowset" data-act="signout"><span class="k" style="color:var(--pink-d)">Ieși din cont</span><span class="go">›</span></button>
+    </div>
+    <div class="hint">Datele stau în contul tău Supabase și te urmează pe orice dispozitiv.</div>`;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Clasament + provocări
+   ═══════════════════════════════════════════════════════════════════════ */
+async function loadGroup(force){
+  if(LB!==null&&!force) return;
+  try{
+    const [lb,ch]=await Promise.all([
+      sb.from("leaderboard").select("*"),
+      sb.from("challenges").select("*").order("ends")]);
+    if(lb.error) throw lb.error;
+    LB=lb.data||[]; CH=ch.data||[];
+    const pr=await sb.from("challenge_progress").select("*");
+    CHP=pr.data||[];
+  }catch(e){
+    LB=LB||[]; CH=CH||[]; CHP=CHP||[];
+    toast("Nu am putut încărca grupul — ai rulat schema-social.sql?");
+  }
+  if(tab==="grup") render();
+}
+function miniAv(a,cls){
+  const av=typeof a==="string"?{t:"e",v:a}:a;
+  return `<div class="${cls||"lbav"}">${av&&av.t==="i"?`<img src="${av.v}" alt="">`:`<span>${av&&av.v?av.v:"🏋️"}</span>`}</div>`;
+}
+function viewGroup(){
+  const seg=`<div class="seg">
+    <button data-act="gsub" data-v="lb" class="${gsub==="lb"?"on":""}">Clasament</button>
+    <button data-act="gsub" data-v="ch" class="${gsub==="ch"?"on":""}">Provocări</button></div>`;
+  if(LB===null) return seg+`<div class="empty"><p>Se încarcă…</p></div>`;
+  return seg+(gsub==="lb"?viewLB():viewCH());
+}
+function viewLB(){
+  const per=`<div class="seg" style="margin-bottom:14px">
+    ${[["week","Săptămâna"],["month","30 de zile"],["total","Total"]].map(([k,t])=>
+      `<button data-act="lbper" data-v="${k}" class="${LBper===k?"on":""}">${t}</button>`).join("")}</div>`;
+  const rows=[...LB].sort((a,b)=>(b[LBper]||0)-(a[LBper]||0)||(b.total||0)-(a.total||0));
+  if(!rows.length) return per+`<div class="empty"><div class="big">Deocamdată ești singură aici</div>
+    <p>Trimite link-ul aplicației cuiva. Când își face cont, apare în clasament.</p></div>`;
+  return per+rows.map((r,i)=>`<div class="lbrow ${r.user_id===me.id?"me":""}">
+      <div class="rk ${i<3?"top":""}">${i===0?"★":i+1}</div>
+      ${miniAv(r.avatar)}
+      <div style="flex:1;min-width:0"><div class="nm">${esc(r.name||"Fără nume")}${r.user_id===me.id?" · tu":""}</div>
+        <div class="sub">${r.last_date?"ultima dată "+dateRO(r.last_date).toLowerCase():"încă niciun antrenament"}</div></div>
+      <div class="val">${r[LBper]||0}</div></div>`).join("")+
+    `<div class="hint">Se văd doar numele, poza și numărul de antrenamente. Ce ridici la fiecare exercițiu rămâne al tău.
+      Poți ieși din clasament din Profil.</div>`;
+}
+function viewCH(){
+  const mine=CH||[];
+  const btns=`<div style="display:flex;gap:9px;margin-bottom:14px">
+      <button class="btn ghost" data-act="chjoin" style="flex:1">Intru cu un cod</button>
+      <button class="btn" data-act="chnew" style="flex:1">Provocare nouă</button></div>`;
+  if(!mine.length) return btns+`<div class="empty"><div class="big">Nicio provocare activă</div>
+    <p>Fă una și dă codul prietenelor tale.<br>De exemplu: 12 antrenamente în 30 de zile.</p></div>`;
+  return btns+mine.map(c=>{
+    const mem=(CHP||[]).filter(x=>x.challenge_id===c.id)
+      .map(x=>({...x, val: c.metric==="volume"?Number(x.volume||0):Number(x.sessions||0)}))
+      .sort((a,b)=>b.val-a.val);
+    const left=Math.ceil((new Date(c.ends+"T12:00:00")-new Date(today()+"T12:00:00"))/864e5);
+    const unit=c.metric==="volume"?"kg":"antren.";
+    return `<div class="card chcard">
+      <div class="chtop"><div style="flex:1;min-width:0"><h3>${esc(c.name)}</h3>
+        <div class="m">${fmt(c.goal)} ${unit} · ${left>0?left+" zile rămase":left===0?"ultima zi":"încheiată"}</div></div>
+        <div class="codepill">${esc(c.code)}</div></div>
+      ${mem.map(m=>{ const p=Math.min(1,c.goal?m.val/c.goal:0), done=m.val>=c.goal;
+        return `<div class="mrow"><div class="l">${miniAv(m.avatar,"mini")}
+          <div class="nm">${esc(m.name||"Fără nume")}${m.user_id===me.id?" · tu":""}</div>
+          <div class="v ${done?"done":""}">${done?"✓ ":""}${c.metric==="volume"?Math.round(m.val):m.val} / ${fmt(c.goal)}</div></div>
+          <div class="pbar ${done?"done":""}"><i style="width:${(p*100).toFixed(0)}%"></i></div></div>`; }).join("")}
+      <button class="rowset" style="padding:12px 0 0;border-top:1px solid var(--line);margin-top:14px"
+        data-act="chleave" data-id="${c.id}"><span class="k" style="color:var(--pink-d);font-size:13.5px">
+        ${c.created_by===me.id?"Șterge provocarea":"Ies din provocare"}</span></button></div>`;
+  }).join("");
+}
+/* ═══════════════════════════════════════════════════════════════════════
+   8. Foi modale
+   ═══════════════════════════════════════════════════════════════════════ */
+function sheet(title,inner,focus){
+  close();
+  const w=document.createElement("div"); w.className="scrim";
+  w.innerHTML=`<div class="sheet"><div class="grab"></div><h2>${esc(title)}</h2><div class="scroll">${inner}</div></div>`;
+  w.addEventListener("click",e=>{ if(e.target===w) close(); });
+  document.body.appendChild(w);
+  if(focus){ const i=w.querySelector("input"); if(i) setTimeout(()=>{i.focus(); i.select&&i.select();},60); }
+  return w;
+}
+function close(){ document.querySelectorAll(".scrim").forEach(s=>s.remove()); }
+
+
+function tutQuery(e){ return (e.search&&e.search.trim())||e.name; }
+function sheetTutorial(id){
+  const e=exOf(id); if(!e) return;
+  const w=sheet("Cum se face",
+    `<div class="hint" style="text-align:left;padding:0 6px 12px">Caut după termenul de mai jos, nu după numele
+      din lista ta — „${esc(e.name)}” e numele tău pentru el, care pe TikTok poate să nu însemne nimic.</div>
+     <input class="srch" id="tq" value="${esc(tutQuery(e))}" autocomplete="off">
+     <a class="btn" id="tt" target="_blank" rel="noopener">Caută pe TikTok</a>
+     <div style="height:9px"></div>
+     <a class="btn ghost" id="ty" target="_blank" rel="noopener">Caută pe YouTube</a>
+     <div style="height:12px"></div>
+     <button class="btn quiet" data-act="savetut" data-id="${id}">Ține minte termenul ăsta</button>
+     <div style="height:8px"></div>`);
+  const q=w.querySelector("#tq"), tt=w.querySelector("#tt"), ty=w.querySelector("#ty");
+  const sync=()=>{ const v=encodeURIComponent(q.value.trim()||e.name);
+    tt.href="https://www.tiktok.com/search?q="+v;
+    ty.href="https://www.youtube.com/results?search_query="+v; };
+  q.addEventListener("input",sync); sync();
+}
+function sheetAddEx(){
+  const w=sheet("Adaugă exercițiu",
+    `<input class="srch" id="q" placeholder="Caută sau scrie unul nou" autocomplete="off"><div id="qlist"></div>`);
+  const q=w.querySelector("#q");
+  const paint=()=>{
+    const v=q.value.trim().toLowerCase(), L=w.querySelector("#qlist");
+    const inS=(S.active?S.active.items:[]).map(i=>i.exId);
+    const match=S.ex.filter(e=>e.name.toLowerCase().includes(v));
+    let h="";
+    if(!v){
+      const rec=[];
+      for(let i=S.sessions.length-1;i>=0&&rec.length<5;i--)
+        S.sessions[i].items.forEach(it=>{ if(!rec.includes(it.exId)&&rec.length<5) rec.push(it.exId); });
+      if(rec.length){ h+='<div class="grouplbl">Recente</div>';
+        rec.forEach(id=>{ const e=exOf(id); if(e) h+=rowPick(e,inS); }); }
+    }
+    GROUPS.forEach(g=>{ const l=match.filter(e=>e.group===g); if(!l.length) return;
+      h+=`<div class="grouplbl">${g}</div>`; l.forEach(e=>h+=rowPick(e,inS)); });
+    if(v&&!match.some(e=>e.name.toLowerCase()===v))
+      h+=`<button class="pick" data-act="createex" data-nm="${esc(q.value.trim())}" style="border-color:var(--pink)">
+        <div style="flex:1"><div class="nm" style="color:var(--pink-d)">+ Creează „${esc(q.value.trim())}”</div></div></button>`;
+    L.innerHTML=h||'<div class="hint">Nimic găsit.</div>';
+  };
+  q.addEventListener("input",paint); paint();
+}
+function rowPick(e,inS){
+  const ld=lastDone(e.id);
+  return `<button class="pick" data-act="useex" data-id="${e.id}">${gicon(e.group)}
+    <div style="flex:1;min-width:0"><div class="nm">${esc(e.name)}${inS.includes(e.id)?' <span style="color:var(--muted-2);font-size:12px">· deja adăugat</span>':""}</div>
+    <div class="mt">${ld?esc(stepsText(ld.steps).slice(0,54)):"fără istoric"}</div></div><span class="go">+</span></button>`;
+}
+const FIELDS={
+  name:{t:"Nume",p:"Numele tău"}, gym:{t:"Sala",p:"Unde te antrenezi"},
+  born:{t:"Data nașterii",type:"date"}, height:{t:"Înălțime (cm)",mode:"decimal"},
+  target:{t:"Greutate țintă (kg)",mode:"decimal"}, goal:{t:"Antrenamente pe săptămână",mode:"numeric"},
+  rest:{t:"Pauză între serii (secunde)",mode:"numeric"}
+};
+function sheetEdit(f){
+  const d=FIELDS[f], cur=S.me[f];
+  sheet(d.t,`<input class="srch" id="fv" ${d.type?`type="${d.type}"`:""} ${d.mode?`inputmode="${d.mode}"`:""}
+    placeholder="${esc(d.p||"")}" value="${esc(cur==null?"":(typeof cur==="number"?fmt(cur):cur))}">
+    <button class="btn" data-act="savefield" data-f="${f}">Salvează</button><div style="height:8px"></div>`,true);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   9. Interacțiuni
+   ═══════════════════════════════════════════════════════════════════════ */
+document.addEventListener("click",async ev=>{
+  const nv=ev.target.closest("nav button");
+  if(nv){ tab=nv.dataset.tab; sel=null; render(); if(tab==="grup") loadGroup(); return; }
+  const b=ev.target.closest("[data-act]"); if(!b) return;
+  const A=b.dataset.act, i=+b.dataset.i, si=+b.dataset.s;
+
+  /* --- autentificare --- */
+  if(A==="swapauth"){ authMode=authMode==="in"?"up":"in"; authMsg=null; render(); return; }
+  if(A==="signin"||A==="signup"){
+    const mail=(document.getElementById("a-mail").value||"").trim();
+    const pass=document.getElementById("a-pass").value||"";
+    const nm=A==="signup"?(document.getElementById("a-name").value||"").trim():"";
+    if(!mail||!pass){ authMsg={k:"err",t:"Completează emailul și parola."}; render(); return; }
+    if(A==="signup"&&pass.length<6){ authMsg={k:"err",t:"Parola trebuie să aibă minim 6 caractere."}; render(); return; }
+    authBusy=true; authMsg=null; render();
+    try{
+      if(A==="signin"){
+        const {error}=await sb.auth.signInWithPassword({email:mail,password:pass});
+        if(error) throw error;
+      }else{
+        const {data,error}=await sb.auth.signUp({email:mail,password:pass,options:{data:{name:nm}}});
+        if(error) throw error;
+        if(!data.session){ authBusy=false; authMode="in";
+          authMsg={k:"ok",t:"Ți-am trimis un email de confirmare. Confirmă, apoi intră în cont."}; render(); return; }
+      }
+    }catch(e){
+      authBusy=false;
+      const m=(e&&e.message||"").toLowerCase();
+      authMsg={k:"err",t: m.includes("invalid login")?"Email sau parolă greșită."
+        : m.includes("already registered")||m.includes("already been")?"Există deja un cont cu emailul ăsta."
+        : m.includes("confirm")?"Confirmă întâi emailul."
+        : (e.message||"Ceva n-a mers. Încearcă din nou.")};
+      render(); return;
+    }
+    authBusy=false; return;
+  }
+  if(A==="reset"){
+    const mail=(document.getElementById("a-mail").value||"").trim();
+    if(!mail){ authMsg={k:"err",t:"Scrie întâi emailul, apoi apasă din nou."}; render(); return; }
+    await sb.auth.resetPasswordForEmail(mail,{redirectTo:location.href});
+    authMsg={k:"ok",t:"Ți-am trimis un link de resetare pe email."}; render(); return;
+  }
+  if(A==="signout"){ await sb.auth.signOut(); me=null; S=null; tab="log"; authBusy=false; authMode="in"; render(); return; }
+
+  if(!me) return;
+
+  /* --- sesiune --- */
+  if(A==="start"){ S.active={id:uid(),date:today(),started:Date.now(),items:[]}; pushProfile(); render(); sheetAddEx(); return; }
+  if(A==="addex"){ sheetAddEx(); return; }
+  if(A==="useex"||A==="createex"){
+    let id=b.dataset.id;
+    if(A==="createex"){ const e={id:uid(),name:b.dataset.nm,group:"Altele",ref:[]}; S.ex.push(e); pushEx(e); id=e.id; }
+    if(!S.active) S.active={id:uid(),date:today(),started:Date.now(),items:[]};
+    const ld=lastDone(id);
+    S.active.items.push({id:uid(),exId:id,steps:ld?ld.steps.map(s=>({kg:s.kg,reps:[]})):[{kg:10,reps:[]}]});
+    sel=null; close(); pushProfile(); render();
+    scrollTo({top:document.body.scrollHeight,behavior:"smooth"}); return;
+  }
+  if(A==="addstep"){ const it=S.active.items[i];
+    it.steps.push({kg:(it.steps.length?it.steps[it.steps.length-1].kg:10)+5,reps:[]}); pushProfile(); render(); return; }
+  if(A==="kg+"||A==="kg-"){ const st=S.active.items[i].steps[si];
+    st.kg=Math.max(0,Math.round((st.kg+(A==="kg+"?2.5:-2.5))*10)/10); buzz(8); pushProfile(); render(); return; }
+  if(A==="kgset"){ sel={i,s:si,r:null};
+    sheet("Greutate",`<input class="srch" id="kgv" inputmode="decimal" value="${fmt(S.active.items[i].steps[si].kg)}">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      ${[2.5,5,10,20].map(v=>`<button class="chip" style="min-width:68px;font-family:var(--body);font-size:14px" data-act="kgq" data-v="${v}">+${v}</button>`).join("")}</div>
+      <button class="btn" data-act="kgok">Gata</button><div style="height:8px"></div>`,true); return; }
+  if(A==="kgq"){ const inp=document.getElementById("kgv");
+    inp.value=fmt((numRO(inp.value)||0)+parseFloat(b.dataset.v)); return; }
+  if(A==="kgok"){ const v=numRO(document.getElementById("kgv").value);
+    if(v!=null&&sel) S.active.items[sel.i].steps[sel.s].kg=Math.max(0,v);
+    sel=null; close(); pushProfile(); render(); return; }
+  if(A==="addset"){
+    const st=S.active.items[i].steps[si];
+    const ld=lastDone(S.active.items[i].exId);
+    const prev=st.reps.length?st.reps[st.reps.length-1]
+      :(ld&&ld.steps[si]&&ld.steps[si].reps.length?ld.steps[si].reps[0]:10);
+    st.reps.push(prev); sel={i,s:si,r:st.reps.length-1};
+    buzz(14); startRest(); pushProfile(); render(); return; }
+  if(A==="pick"){ const r=+b.dataset.r;
+    sel=(sel&&sel.i===i&&sel.s===si&&sel.r===r)?null:{i,s:si,r}; render(); return; }
+  if(A==="rep+"||A==="rep-"){ const st=S.active.items[sel.i].steps[sel.s];
+    st.reps[sel.r]=Math.max(1,Math.min(99,st.reps[sel.r]+(A==="rep+"?1:-1))); buzz(6); pushProfile(); render(); return; }
+  if(A==="repdel"){ const st=S.active.items[sel.i].steps[sel.s];
+    st.reps.splice(sel.r,1); sel=null; pushProfile(); render(); return; }
+  if(A==="exmenu"){ sheet(nameOf(S.active.items[i]),
+    `<button class="pick" data-act="tut" data-id="${S.active.items[i].exId}">
+       <div style="flex:1"><div class="nm">Cum se face? Caută pe TikTok</div></div></button>
+     <button class="pick" data-act="delstep" data-i="${i}"><div style="flex:1"><div class="nm">Șterge ultima treaptă</div></div></button>
+     <button class="pick" data-act="delex" data-i="${i}"><div style="flex:1"><div class="nm" style="color:var(--pink-d)">Scoate din sesiune</div></div></button>`); return; }
+  if(A==="delstep"){ const it=S.active.items[i]; if(it.steps.length>1) it.steps.pop(); close(); pushProfile(); render(); return; }
+  if(A==="delex"){ S.active.items.splice(i,1); sel=null; close(); pushProfile(); render(); return; }
+  if(A==="finish"){
+    const a=S.active;
+    a.items=a.items.filter(it=>it.steps.some(s=>s.reps.length));
+    a.items.forEach(it=>{ it.steps=it.steps.filter(s=>s.reps.length); });
+    if(!a.items.length){ S.active=null; pushProfile(); render(); toast("Sesiune goală — nesalvată"); return; }
+    a.min=Math.max(1,Math.round((Date.now()-(a.started||Date.now()))/6e4));
+    const recs=a.items.filter(it=>Math.max(...it.steps.map(s=>s.kg))>best(it.exId,a.id)).length;
+    a.items.forEach(it=>{ const e=exOf(it.exId);
+      if(e){ e.ref=it.steps.map(s=>({kg:s.kg,reps:s.reps.slice()})); pushEx(e); } });
+    S.sessions.push({id:a.id,date:a.date,min:a.min,items:a.items});
+    pushSession({id:a.id,date:a.date,min:a.min,items:a.items});
+    S.active=null; sel=null; pushProfile(); stopRest(); tab="hist"; render();
+    toast(recs?`Salvat · ${recs} record${recs>1?"uri noi":" nou"} ★`:"Antrenament salvat"); return;
+  }
+  if(A==="rest+"){ rest.left+=30; if(!rest.on||rest.left===30){ rest.on=true; clearInterval(restT);
+    restT=setInterval(()=>{ rest.left--; if(rest.left<=0){rest.left=0;clearInterval(restT);buzz([90,70,90]);beep();} renderDock(); },1000); }
+    renderDock(); return; }
+  if(A==="restoff"){ stopRest(); return; }
+
+  /* --- istoric --- */
+  if(A==="sessmenu"){ sheet("Sesiune",
+    `<button class="pick" data-act="delsess" data-id="${b.dataset.id}"><div style="flex:1"><div class="nm" style="color:var(--pink-d)">Șterge sesiunea</div></div></button>`); return; }
+  if(A==="delsess"){ const id=b.dataset.id; S.sessions=S.sessions.filter(s=>s.id!==id);
+    run(()=>sb.from("sessions").delete().eq("id",id)); close(); render(); return; }
+
+  /* --- progres --- */
+  if(A==="pickprog"){ const used=S.ex.filter(e=>S.sessions.some(s=>s.items.some(x=>x.exId===e.id)));
+    sheet("Alege exercițiul",used.map(e=>`<button class="pick" data-act="setprog" data-id="${e.id}">
+      <div style="flex:1;min-width:0"><div class="nm">${esc(e.name)}</div><div class="mt">record ${fmt(best(e.id))} kg</div></div>
+      <span class="go">›</span></button>`).join("")); return; }
+  if(A==="setprog"){ S.progEx=b.dataset.id; close(); pushProfile(); render(); return; }
+
+  /* --- exerciții --- */
+  if(A==="exinfo"){ const e=exOf(b.dataset.id), ld=lastDone(e.id);
+    sheet(e.name,`<div class="card" style="margin-bottom:12px"><div class="sess">
+        <div class="m">Grupă: ${esc(e.group)}</div><div class="m">Record: ${fmt(best(e.id))} kg</div>
+        <div class="m">Ultima dată: ${ld?esc(stepsText(ld.steps)):"—"}</div></div></div>
+      <button class="btn" data-act="tut" data-id="${e.id}" style="margin-bottom:9px">Cum se face? Caută pe TikTok</button>
+      <button class="btn ghost" data-act="useex" data-id="${e.id}" style="margin-bottom:9px">Adaugă în sesiune</button>
+      <button class="btn danger" data-act="delexlib" data-id="${e.id}">Șterge din listă</button><div style="height:8px"></div>`); return; }
+  if(A==="delexlib"){ const id=b.dataset.id; S.ex=S.ex.filter(x=>x.id!==id);
+    run(()=>sb.from("exercises").delete().eq("id",id)); close(); render(); return; }
+  if(A==="newex"){ sheet("Exercițiu nou",
+    `<input class="srch" id="nn" placeholder="Nume"><div class="grouplbl">Grupă</div>
+     <div id="gsel">${GROUPS.map(g=>`<button class="chip" style="min-width:auto;padding:0 13px;height:38px;font-family:var(--body);font-size:13.5px;font-weight:600;margin:0 6px 6px 0" data-act="gpick" data-g="${g}">${g}</button>`).join("")}</div>
+     <div style="height:10px"></div><button class="btn" data-act="saveex">Salvează</button><div style="height:8px"></div>`,true);
+    window._g="Altele"; return; }
+  if(A==="gpick"){ window._g=b.dataset.g;
+    document.querySelectorAll("#gsel .chip").forEach(c=>c.classList.toggle("on",c.dataset.g===window._g)); return; }
+  if(A==="saveex"){ const n=document.getElementById("nn").value.trim();
+    if(!n){ toast("Scrie un nume"); return; }
+    const e={id:uid(),name:n,group:window._g||"Altele",ref:[]}; S.ex.push(e); pushEx(e); close(); render(); return; }
+
+
+  /* --- grup --- */
+  if(A==="gsub"){ gsub=b.dataset.v; render(); return; }
+  if(A==="lbper"){ LBper=b.dataset.v; render(); return; }
+  if(A==="chnew"){
+    window._cm="sessions"; window._cd=30;
+    sheet("Provocare nouă",
+      `<input class="srch" id="cn" placeholder="Nume, ex. Ianuarie fără scuze">
+       <div class="grouplbl">Se numără</div>
+       <div id="csel" style="display:flex;gap:8px;margin-bottom:6px">
+         <button class="chip on" style="flex:1;min-width:auto;font-family:var(--body);font-size:13.5px;font-weight:700" data-act="cmet" data-v="sessions">Antrenamente</button>
+         <button class="chip" style="flex:1;min-width:auto;font-family:var(--body);font-size:13.5px;font-weight:700" data-act="cmet" data-v="volume">Kilograme ridicate</button></div>
+       <div class="grouplbl">Obiectiv</div>
+       <input class="srch" id="cg" inputmode="decimal" value="12">
+       <div class="grouplbl">Pe câte zile</div>
+       <div id="dsel" style="display:flex;gap:8px;margin-bottom:14px">
+         ${[7,14,30,60].map(d=>`<button class="chip ${d===30?"on":""}" style="flex:1;min-width:auto;font-family:var(--body);font-size:13.5px;font-weight:700" data-act="cdur" data-v="${d}">${d}</button>`).join("")}</div>
+       <button class="btn" data-act="chcreate">Creează</button><div style="height:8px"></div>`,true);
+    return; }
+  if(A==="cmet"){ window._cm=b.dataset.v;
+    document.querySelectorAll("#csel .chip").forEach(c=>c.classList.toggle("on",c.dataset.v===window._cm));
+    const g=document.getElementById("cg"); if(g) g.value=window._cm==="volume"?"20000":"12"; return; }
+  if(A==="cdur"){ window._cd=+b.dataset.v;
+    document.querySelectorAll("#dsel .chip").forEach(c=>c.classList.toggle("on",+c.dataset.v===window._cd)); return; }
+  if(A==="chcreate"){
+    const nm=document.getElementById("cn").value.trim(), goal=numRO(document.getElementById("cg").value);
+    if(!nm||!goal){ toast("Nume și obiectiv, te rog"); return; }
+    const end=new Date(); end.setDate(end.getDate()+(window._cd||30));
+    const c={id:uid(), code:Math.random().toString(36).slice(2,7).toUpperCase(),
+      name:nm, metric:window._cm||"sessions", goal:goal, starts:today(),
+      ends:new Date(end.getTime()-end.getTimezoneOffset()*6e4).toISOString().slice(0,10),
+      created_by:me.id};
+    close();
+    const r=await sb.from("challenges").insert(c);
+    if(r.error){ toast("N-a mers: "+r.error.message); return; }
+    await sb.from("challenge_members").insert({challenge_id:c.id,user_id:me.id});
+    await loadGroup(true); gsub="ch"; render(); toast("Gata · cod "+c.code); return; }
+  if(A==="chjoin"){ sheet("Intru într-o provocare",
+    `<input class="srch" id="cc" placeholder="Codul, ex. K7P2M" autocomplete="off"
+       style="text-transform:uppercase;letter-spacing:.1em;font-weight:800">
+     <button class="btn" data-act="chjoingo">Intru</button><div style="height:8px"></div>`,true); return; }
+  if(A==="chjoingo"){
+    const code=(document.getElementById("cc").value||"").trim();
+    if(!code) return;
+    close();
+    const r=await sb.rpc("join_challenge",{p_code:code});
+    if(r.error){ toast("Codul nu există"); return; }
+    await loadGroup(true); gsub="ch"; render(); toast("Ai intrat"); return; }
+  if(A==="chleave"){
+    const id=b.dataset.id, c=(CH||[]).find(x=>x.id===id);
+    if(c&&c.created_by===me.id) await sb.from("challenges").delete().eq("id",id);
+    else await sb.from("challenge_members").delete().eq("challenge_id",id).eq("user_id",me.id);
+    await loadGroup(true); render(); return; }
+  if(A==="visible"){ S.me.visible=S.me.visible===false; pushProfile(); LB=null; render(); return; }
+
+  /* --- tutorial --- */
+  if(A==="tut"){ sheetTutorial(b.dataset.id); return; }
+  if(A==="savetut"){
+    const e=exOf(b.dataset.id); if(e){ e.search=document.getElementById("tq").value.trim(); pushEx(e); }
+    close(); render(); toast("Salvat"); return; }
+  if(A==="lib"){ sheet("Exercițiile mele", viewLib()); return; }
+  /* --- profil --- */
+  if(A==="edit"){ sheetEdit(b.dataset.f); return; }
+  if(A==="savefield"){
+    const f=b.dataset.f, raw=document.getElementById("fv").value.trim();
+    if(f==="name"||f==="gym") S.me[f]=raw;
+    else if(f==="born") S.me.born=raw||null;
+    else { const v=numRO(raw); S.me[f]=v; if(f==="goal") S.me.goal=Math.max(1,Math.min(14,Math.round(v||3)));
+      if(f==="rest") S.me.rest=Math.max(10,Math.min(600,Math.round(v||90))); }
+    close(); pushProfile(); render(); return; }
+  if(A==="avatar"){ sheet("Poza de profil",
+    `<div class="avpick">${AVATARS.map(a=>`<button data-act="setav" data-v="${a}" class="${S.me.avatar&&S.me.avatar.v===a?"on":""}">${a}</button>`).join("")}</div>
+     <button class="btn ghost" data-act="photo">Încarcă o poză</button><div style="height:8px"></div>`); return; }
+  if(A==="setav"){ S.me.avatar={t:"e",v:b.dataset.v}; close(); pushProfile(); render(); return; }
+  if(A==="photo"){
+    const inp=document.createElement("input"); inp.type="file"; inp.accept="image/*";
+    inp.onchange=()=>{ const f=inp.files[0]; if(!f) return;
+      const rd=new FileReader();
+      rd.onload=()=>{ const im=new Image();
+        im.onload=()=>{ const c=document.createElement("canvas"); c.width=c.height=220;
+          const s=Math.min(im.width,im.height), x=c.getContext("2d");
+          x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,220,220);
+          S.me.avatar={t:"i",v:c.toDataURL("image/jpeg",.8)}; close(); pushProfile(); render(); };
+        im.src=rd.result; };
+      rd.readAsDataURL(f); };
+    inp.click(); return; }
+  if(A==="addbody"){ sheet("Cântărire",
+    `<input class="srch" id="bw" inputmode="decimal" placeholder="kg"
+       value="${S.body.length?fmt(S.body[S.body.length-1].kg):""}">
+     <button class="btn" data-act="savebody">Salvează</button><div style="height:8px"></div>`,true); return; }
+  if(A==="savebody"){ const v=numRO(document.getElementById("bw").value);
+    if(v==null){ toast("Scrie o valoare"); return; }
+    const rec={id:uid(),date:today(),kg:v};
+    S.body=S.body.filter(x=>x.date!==rec.date); S.body.push(rec);
+    S.body.sort((a,c)=>a.date<c.date?-1:1);
+    pushBody(rec); close(); render(); return; }
+  if(A==="delbody"){ const last=S.body.pop(); if(last) run(()=>sb.from("body_log").delete().eq("id",last.id));
+    render(); return; }
+  if(A==="export"){
+    const blob=new Blob([JSON.stringify({profil:S.me,exercitii:S.ex,sesiuni:S.sessions,greutate:S.body},null,1)],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download="sala-"+today()+".json"; a.click(); toast("Fișier descărcat"); return; }
+});
+
+/* ═══════════════════════════════════════════════════════════════════════
+   10. Pornire
+   ═══════════════════════════════════════════════════════════════════════ */
+let booting=false;
+async function enter(user){
+  if(booting) return; booting=true; authBusy=false; authMsg=null;
+  me=user;
+  try{ await loadAll(); }catch(e){ toast("Nu am putut încărca datele — verifică conexiunea"); }
+  tab="log"; render(); booting=false;
+}
+(async()=>{
+  if(SUPABASE_URL.indexOf("PUNE_AICI")===0||SUPABASE_ANON_KEY.indexOf("PUNE_AICI")===0){ viewSetup(); return; }
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  /* apelurile către bază nu se fac direct în callback — de aici setTimeout */
+  sb.auth.onAuthStateChange((evt,session)=>{
+    if(session&&session.user){
+      if(me&&me.id===session.user.id) return;
+      setTimeout(()=>enter(session.user),0);
+    }else if(evt==="SIGNED_OUT"){ me=null; S=null; authBusy=false; render(); }
+  });
+  render();
+  const {data}=await sb.auth.getSession();
+  if(data&&data.session&&!me&&!booting) enter(data.session.user);
+})();
+</script>
+<script>
+/* aplicație pe ecranul telefonului: fișierele site-ului rămân salvate pentru pornire rapidă */
+if("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+</script>
+</html>
