@@ -1,5 +1,5 @@
 // Offline cache: the app works without internet once installed.
-const CACHE = 'daylog-v1';
+const CACHE = 'daylog-v2';
 const FILES = ['./', 'index.html', 'manifest.json', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {
